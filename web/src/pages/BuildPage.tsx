@@ -64,14 +64,19 @@ export function BuildPage() {
                   </div>
                 ))}
               </div>
-              <a
-                href={`/api/v1/build/${name}/download/${o.directoryName}/${o.files[0]?.path ?? ""}`}
-                className="btn-primary"
-                style={{ display: "inline-block", marginTop: 12, textDecoration: "none" }}
-                download
-              >
-                ⬇️ 下载 {o.target}
-              </a>
+              <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
+                {o.files.map((f) => (
+                  <a
+                    key={f.path}
+                    href={`/api/v1/build/${name}/download/${o.directoryName}/${f.path}`}
+                    className="btn-primary"
+                    style={{ textDecoration: "none" }}
+                    download
+                  >
+                    ⬇️ {f.path}
+                  </a>
+                ))}
+              </div>
             </div>
           ))}
         </div>

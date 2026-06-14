@@ -9,10 +9,16 @@ import type { ResolvedSkill } from "../types/skill.js";
 export class Session {
   private history: ChatMessage[] = [];
   private resolved: ResolvedSkill;
+  lastUsed: number = Date.now();
 
   constructor(resolved: ResolvedSkill) {
     this.resolved = resolved;
     this.history.push({ role: "system", content: resolved.renderedSystemPrompt });
+  }
+
+  /** 更新最后使用时间 */
+  touch(): void {
+    this.lastUsed = Date.now();
   }
 
   /** 添加用户消息 */

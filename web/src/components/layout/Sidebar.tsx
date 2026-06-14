@@ -49,7 +49,7 @@ export function Sidebar() {
         ))}
       </nav>
       <div style={{ position: "absolute", bottom: 20, left: 20, right: 20, fontSize: 11, opacity: 0.3 }}>
-        v0.2.0 · © 2026
+        v0.1.0 · © 2026
       </div>
     </aside>
   );

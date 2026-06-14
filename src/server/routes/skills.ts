@@ -3,12 +3,23 @@
  */
 import { Router } from "express";
 import { resolve } from "node:path";
-import { existsSync, unlinkSync, rmSync } from "node:fs";
+import { existsSync, readFileSync, rmSync } from "node:fs";
 import { loadSkill } from "../../core/skill-loader.js";
 import { skillDefinitionSchema } from "../../core/skill-definition.js";
-import { findSkillFiles, writeFileSafe } from "../../shared/fs.js";
-import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
+import { findSkillFiles, writeFileSafe, isSubPath } from "../../shared/fs.js";
+import { parse as parseYaml } from "yaml";
 import { NotFoundError, ValidationError } from "../middleware/error-handler.js";
+
+/** 校验技能名安全且格式正确 */
+function validateSkillName(name: string): void {
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(name)) {
+    throw new ValidationError(`Invalid skill name: '${name}'. Must be kebab-case (e.g. 'english-tutor')`);
+  }
+  const resolved = resolve(SKILLS_DIR, name);
+  if (!isSubPath(SKILLS_DIR, resolved)) {
+    throw new ValidationError(`Invalid skill name: '${name}'`);
+  }
+}
 
 export const skillsRouter = Router();
 
@@ -44,6 +55,7 @@ skillsRouter.get("/", (_req, res) => {
  * GET /api/v1/skills/:name — 获取单个技能
  */
 skillsRouter.get("/:name", (req, res) => {
+  validateSkillName(req.params.name!);
   const ymlPath = resolve(SKILLS_DIR, req.params.name!, `${req.params.name}.skill.yml`);
 
   if (!existsSync(ymlPath)) {
@@ -79,8 +91,7 @@ skillsRouter.post("/", (req, res) => {
     if (!existsSync(templatePath)) {
       throw new NotFoundError(`Template '${template}' in category '${cat}'`);
     }
-    const fs = require("node:fs");
-    yamlContent = fs.readFileSync(templatePath, "utf-8");
+    yamlContent = readFileSync(templatePath, "utf-8");
   } else if (yaml) {
     yamlContent = yaml;
   } else {
@@ -128,6 +139,7 @@ skillsRouter.put("/:name", (req, res) => {
     );
   }
 
+  validateSkillName(req.params.name!);
   const ymlPath = resolve(SKILLS_DIR, req.params.name!, `${req.params.name}.skill.yml`);
   if (!existsSync(ymlPath)) {
     throw new NotFoundError(`Skill '${req.params.name}'`);
@@ -141,6 +153,7 @@ skillsRouter.put("/:name", (req, res) => {
  * DELETE /api/v1/skills/:name — 删除技能
  */
 skillsRouter.delete("/:name", (req, res) => {
+  validateSkillName(req.params.name!);
   const skillDir = resolve(SKILLS_DIR, req.params.name!);
   if (!existsSync(skillDir)) {
     throw new NotFoundError(`Skill '${req.params.name}'`);
@@ -188,6 +201,5 @@ skillsRouter.post("/validate", (req, res) => {
 });
 
 function requireOriginalYaml(path: string): string {
-  const fs = require("node:fs");
-  return fs.readFileSync(path, "utf-8");
+  return readFileSync(path, "utf-8");
 }

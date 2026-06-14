@@ -2,6 +2,8 @@
 
 小红书技能工厂 — 快速制作、测试、打包可在 RedSkill 商店分发的 AI 技能。
 
+[![CI](https://github.com/vincent-operation/redskill-factory/actions/workflows/ci.yml/badge.svg)](https://github.com/vincent-operation/redskill-factory/actions/workflows/ci.yml)
+
 ## 为什么需要它？
 
 小红书 RedSkill 商店（2026年5月上线）是 AI 时代的"App Store"。已验证的案例包括：
@@ -18,17 +20,24 @@
 
 ```bash
 # 安装
-git clone <your-repo-url>
+git clone https://github.com/vincent-operation/redskill-factory
 cd redskill-factory
 npm install
 npm run build
 
-# 配置 LLM API (可选，本地测试需要)
+# 配置 LLM API (本地测试和 AI 生成需要)
 cp .env.example .env
 # 编辑 .env 填入 DEEPSEEK_API_KEY
 
-# 创建你的第一个 Skill
+# 方式 1: 从模板创建
 node dist/cli/index.js init english-tutor -c education
+
+# 方式 2: 用 AI 从描述生成 ⭐
+node dist/cli/index.js init --from "一个帮助小红书博主写爆款标题的助手" -c creative
+
+# 方式 3: Web UI (可视化操作)
+npm run dev:all
+# 打开 http://localhost:5173
 ```
 
 ## CLI 命令
@@ -116,22 +125,27 @@ src/
 ├── cli/           Commander.js CLI (rfs 命令)
 ├── core/          核心引擎 (Zod 校验, YAML 解析, 编译)
 ├── types/         TypeScript 类型定义
-├── llm/           LLM Provider 抽象 (DeepSeek + Claude)
+├── llm/           LLM Provider (DeepSeek + Claude + 智能生成)
 ├── packager/      打包器 (Claude Code / Generic)
 ├── playground/    本地测试运行器
 ├── marketing/     小红书笔记生成
-└── shared/        工具函数
-templates/         内置 Skill 模板 (12 个)
+├── server/        Express Web API (17 端点)
+├── shared/        工具函数
+└── index.ts       库入口
+web/               React 前端 (Vite)
+templates/         内置 Skill 模板
 skills/            用户创建的技能 (gitignored)
-tests/             测试 (17 个通过 ✅)
+tests/             测试 (50 个通过 ✅)
 ```
 
 ## 开发
 
 ```bash
 npm run build       # TypeScript 编译
-npm test            # 运行测试
+npm test            # 运行 50 个测试
 npm run dev         # 监听模式编译
+npm run dev:all     # 同时启动 Server + Web UI
+npm run lint        # ESLint 检查
 ```
 
 ## 技术栈

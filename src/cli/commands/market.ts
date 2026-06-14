@@ -55,7 +55,7 @@ export function createMarketCommand(): Command {
         for (const t of noteTemplates) {
           console.log(`  ${chalk.cyan(t.name)} — ${t.description}`);
         }
-        console.log(`\n使用 --template 选择模板 (默认: ${noteTemplates[0]?.name})\n`);
+        console.log(`\n使用 --template 选择模板 (默认: ${noteTemplates[0]?.name ?? "通用笔记"})\n`);
       }
 
       // 生成

@@ -6,7 +6,7 @@
  */
 import * as express from "express";
 import { createApp } from "./app.js";
-import { loadConfig } from "../shared/config.js";
+import { loadConfig, checkRequiredKeys } from "../shared/config.js";
 import { registerPackager } from "../packager/registry.js";
 import { ClaudeCodePackager } from "../packager/claude-code.js";
 import { GenericPackager } from "../packager/generic.js";
@@ -30,6 +30,14 @@ if (process.env.NODE_ENV === "production") {
     });
     console.log(`Serving static files from ${distPath}`);
   }
+}
+
+// 启动前检查 API Key
+const missingKeys = checkRequiredKeys();
+if (missingKeys.length > 0) {
+  console.warn("⚠️  Missing API keys:", missingKeys.join(", "));
+  console.warn("   LLM features (test, build) will fail until configured in .env");
+  console.warn("   See .env.example or set environment variables\n");
 }
 
 app.listen(port, () => {

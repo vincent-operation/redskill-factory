@@ -5,7 +5,6 @@ import { Router } from "express";
 import { resolve } from "node:path";
 import { loadSkill } from "../../core/skill-loader.js";
 import { resolveSkill } from "../../core/skill-resolver.js";
-import { compileToMessages } from "../../core/skill-compiler.js";
 import { PlaygroundRunner } from "../../playground/runner.js";
 import { Session } from "../../playground/session.js";
 import { llmRouter } from "../../llm/router.js";
@@ -17,11 +16,17 @@ const SKILLS_DIR = resolve(process.cwd(), "skills");
 const sessions = new Map<string, Session>();
 let sessionCounter = 0;
 
-// 清理过期 session (30 min)
-setInterval(() => {
-  // Simple expiry — just clear all after 30min of the last use
-  // In production, track lastUsed per session
+// 清理过期 session (30 min) — unref() 使其不阻止进程退出
+const cleanupTimer = setInterval(() => {
+  const now = Date.now();
+  const expiry = 30 * 60 * 1000;
+  for (const [id, session] of sessions) {
+    if (now - session.lastUsed > expiry) {
+      sessions.delete(id);
+    }
+  }
 }, 30 * 60 * 1000);
+cleanupTimer.unref();
 
 function loadAndResolve(skillName: string, variables?: Record<string, unknown>) {
   const ymlPath = resolve(SKILLS_DIR, skillName, `${skillName}.skill.yml`);
@@ -60,6 +65,7 @@ testRouter.post("/session/new", (req, res) => {
 testRouter.post("/session/:id/message", async (req, res) => {
   const session = sessions.get(req.params.id!);
   if (!session) throw new NotFoundError(`Session '${req.params.id}'`);
+  session.touch();
 
   const { message, provider: providerName } = req.body as {
     message?: string;
@@ -87,6 +93,7 @@ testRouter.post("/session/:id/message", async (req, res) => {
 testRouter.get("/session/:id", (req, res) => {
   const session = sessions.get(req.params.id!);
   if (!session) throw new NotFoundError(`Session '${req.params.id}'`);
+  session.touch();
   res.json({ history: session.getHistory(), turnCount: session.turnCount });
 });
 

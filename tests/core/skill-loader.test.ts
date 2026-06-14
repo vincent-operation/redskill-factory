@@ -35,8 +35,7 @@ describe("loadSkill", () => {
   });
 
   it("应对无效 YAML 返回错误", () => {
-    const result = loadSkill(resolve(FIXTURES_DIR, "minimal.skill.yml")); // 这是一个有效文件
-    // 测试无效内容: 传入一个不存在的文件路径
+    // 传入一个不存在的文件路径
     const badResult = loadSkill(resolve(FIXTURES_DIR, "nonexistent.yml"));
     assert.equal(badResult.success, false);
   });

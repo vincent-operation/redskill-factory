@@ -4,7 +4,7 @@
  * 生成完整的 LLM 调用所需的 messages 数组，
  * 以及分发所需的元数据文件。
  */
-import type { ResolvedSkill, SkillDefinition, PromptExample } from "../types/skill.js";
+import type { ResolvedSkill, SkillDefinition } from "../types/skill.js";
 import type { PackagerInput } from "../types/package.js";
 
 /** LLM Message 格式 */

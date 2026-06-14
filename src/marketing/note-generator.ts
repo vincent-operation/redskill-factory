@@ -4,7 +4,7 @@
  * 为 Skill 生成小红书上可用的推广笔记。
  */
 import type { SkillDefinition } from "../types/skill.js";
-import { noteTemplates, type NoteTemplate } from "./templates.js";
+import { noteTemplates } from "./templates.js";
 
 export interface MarketingOptions {
   type?: "note" | "cover" | "title";

@@ -68,12 +68,15 @@ buildRouter.post("/", async (req, res) => {
 /**
  * GET /api/v1/build/:skillName/download/:filePath(*) — 下载打包产物
  */
-buildRouter.get("/:skillName/download/:file", (req, res) => {
-  const { skillName, file } = req.params;
-  const absPath = resolve(DIST_DIR, file!);
+buildRouter.get("/:skillName/download/{*filepath}", (req, res) => {
+  const filePath = (req.params as Record<string, string | string[] | undefined>).filepath;
+  const path = Array.isArray(filePath) ? filePath.join("/") : (filePath ?? "");
+  if (!path) throw new ValidationError("File path is required");
+
+  const absPath = resolve(DIST_DIR, path);
 
   if (!existsSync(absPath)) {
-    throw new NotFoundError("File '" + file + "'");
+    throw new NotFoundError("File '" + path + "'");
   }
 
   // 安全检查

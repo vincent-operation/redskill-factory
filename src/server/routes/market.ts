@@ -42,11 +42,14 @@ marketRouter.post("/generate", (req, res) => {
     throw new NotFoundError(`Skill '${skillName}'`);
   }
 
-  const results = generateMarketingContent(result.skill, {
-    type: type ?? "note",
-    count: count ?? 3,
-    template: templateName,
-  });
-
-  res.json({ results });
+  try {
+    const results = generateMarketingContent(result.skill, {
+      type: type ?? "note",
+      count: count ?? 3,
+      template: templateName,
+    });
+    res.json({ results });
+  } catch (err) {
+    throw new ValidationError(`Marketing generation failed: ${(err as Error).message}`);
+  }
 });

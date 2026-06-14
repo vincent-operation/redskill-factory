@@ -3,11 +3,10 @@
  *
  * 在本地运行 Skill，进行对话测试和 evaluation 验证。
  */
-import type { ChatMessage } from "../core/skill-compiler.js";
+import { compileToMessages } from "../core/skill-compiler.js";
 import type { ResolvedSkill } from "../types/skill.js";
 import type { LlmProvider } from "../llm/provider.js";
 import { llmRouter } from "../llm/router.js";
-import { compileToMessages } from "../core/skill-compiler.js";
 import { logger } from "../shared/logger.js";
 import chalk from "chalk";
 

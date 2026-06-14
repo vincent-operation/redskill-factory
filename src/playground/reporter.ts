@@ -1,7 +1,7 @@
 /**
  * Reporter — 测试结果输出
  */
-import type { EvalReport, EvalDetail } from "./runner.js";
+import type { EvalReport } from "./runner.js";
 import chalk from "chalk";
 import { logger } from "../shared/logger.js";
 

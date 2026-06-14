@@ -8,6 +8,7 @@ import { resolve, join } from "node:path";
 import { existsSync, readFileSync } from "node:fs";
 import { logger } from "../../shared/logger.js";
 import { ensureDir, writeFileSafe } from "../../shared/fs.js";
+import { generateSkillFromDescription } from "../../llm/skill-generator.js";
 
 // 内置模板目录 (相对于项目根)
 const TEMPLATES_DIR = resolve(process.cwd(), "templates");
@@ -39,9 +40,24 @@ export function createInitCommand(): Command {
       let templateYaml: string | null = loadTemplate(templateName, category);
 
       if (!templateYaml && options.from) {
-        // TODO: 在 LLM 层实现后，用 AI 从描述生成
-        logger.info("将从描述生成 skill.yml (LLM 功能暂未实现)");
-        templateYaml = generateMinimalYaml(name ?? "new-skill", category, options.from);
+        logger.info("🤖 正在用 AI 从描述生成 skill.yml...");
+        try {
+          templateYaml = await generateSkillFromDescription(options.from, category);
+          logger.success("AI 生成成功！");
+        } catch (err) {
+          logger.error(`AI 生成失败: ${(err as Error).message}`);
+          logger.info("将使用最小化骨架作为替代");
+          if (!name) {
+            // 从描述推断一个 kebab-case 名称
+            name = options.from
+              .replace(/[^\w\s-]/g, "")
+              .trim()
+              .toLowerCase()
+              .replace(/\s+/g, "-")
+              .slice(0, 50);
+          }
+          templateYaml = generateMinimalYaml(name, category, options.from);
+        }
       }
 
       if (!templateYaml) {

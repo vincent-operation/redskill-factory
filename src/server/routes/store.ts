@@ -83,10 +83,12 @@ storeRouter.get("/", (_req, res) => {
  * POST /api/v1/store/purchase — 购买技能
  */
 storeRouter.post("/purchase", (req, res) => {
-  const { skillName, buyerId, buyerEmail } = req.body as {
+  const { skillName, buyerId, buyerEmail, txnId, ref } = req.body as {
     skillName?: string;
     buyerId?: string;
     buyerEmail?: string;
+    txnId?: string;
+    ref?: string;
   };
   if (!skillName) throw new ValidationError("skillName is required");
   if (!buyerId) throw new ValidationError("buyerId is required");
@@ -137,6 +139,8 @@ storeRouter.post("/purchase", (req, res) => {
     skillName,
     buyerId,
     buyerEmail: buyerEmail ?? null,
+    txnId: txnId ?? null,
+    ref: ref ?? null,
     price: price ?? { amount: 0, currency: "CNY" },
     license,
     purchasedAt: new Date().toISOString(),

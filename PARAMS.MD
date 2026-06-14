@@ -136,7 +136,7 @@ skill.yml → SkillLoader (parse + validate)
 - [x] LLM Provider (DeepSeek + Claude + Router)
 - [x] 小红书笔记生成 + 封面建议
 - [x] 4 个内置模板 (带定价): 英语外教(68.8元), 智能记账(59.8元), 爆款文案(12.9元), 穿搭顾问(29.9元)
-- [x] 50 源文件, **50 单元测试** (17 core + 10 packager + 14 CLI + 9 server)
+- [x] 51 源文件, **57 单元+集成测试** (17 core + 10 packager + 14 CLI + 9 server + 7 integration)
 
 ### Phase 2 (Web UI) — commit `702d7f3`
 - [x] Express.js 服务器: 17 REST + SSE API 端点
@@ -164,6 +164,9 @@ skill.yml → SkillLoader (parse + validate)
 | 2026-06-14 | #11: 新增 CLI 测试 (validate/init/build/list, 14 tests) | 构建+41测试+0 lint |
 | 2026-06-14 | #12: 新增 Server 路由测试 (health/build/validate/crud/templates, 9 tests) | 构建+50测试+0 lint |
 | 2026-06-14 | 收尾: 修复 sidebar 版本号、market 错误处理、.gitignore web/dist、.env.example 完善、timeout 中间件、build wildcard 类型修复 | 构建+50测试+0 lint |
+| 2026-06-14 | CI/CD: GitHub Actions workflow (build+test+lint, Node 20/22) | — |
+| 2026-06-14 | README: 更新测试数、Web UI、AI 生成、CI badge | — |
+| 2026-06-14 | 集成测试: E2E 管道 + 模板系统 + 产物验证 + 性能 (7 tests) | 构建+57测试+0 lint |
 
 ## 9. 使用说明
 

@@ -8,6 +8,7 @@ import { templatesRouter } from "./routes/templates.js";
 import { testRouter } from "./routes/test.js";
 import { buildRouter } from "./routes/build.js";
 import { marketRouter } from "./routes/market.js";
+import { storeRouter } from "./routes/store.js";
 import { healthRouter } from "./routes/health.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { requestLogger } from "./middleware/logger.js";
@@ -28,6 +29,7 @@ export function createApp(): express.Express {
   app.use("/api/v1/test", testRouter);
   app.use("/api/v1/build", buildRouter);
   app.use("/api/v1/market", marketRouter);
+  app.use("/api/v1/store", storeRouter);
   app.use("/api/v1/health", healthRouter);
 
   // Error handling

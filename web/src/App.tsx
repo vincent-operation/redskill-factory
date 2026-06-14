@@ -6,12 +6,14 @@ import { SkillTesterPage } from "./pages/SkillTesterPage.js";
 import { BuildPage } from "./pages/BuildPage.js";
 import { MarketPage } from "./pages/MarketPage.js";
 import { TemplatesPage } from "./pages/TemplatesPage.js";
+import { StorePage } from "./pages/StorePage.js";
 
 export function App() {
   return (
     <AppShell>
       <Routes>
         <Route path="/" element={<DashboardPage />} />
+        <Route path="/store" element={<StorePage />} />
         <Route path="/skills/new" element={<SkillEditorPage />} />
         <Route path="/skills/:name/edit" element={<SkillEditorPage />} />
         <Route path="/skills/:name/test" element={<SkillTesterPage />} />

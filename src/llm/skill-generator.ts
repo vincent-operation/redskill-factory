@@ -56,13 +56,15 @@ distribution:
 
 ## 要点
 
-1. name 必须是 kebab-case，仅英文小写字母和连字符
-2. prompts.system 用第一人称，明确技能的角色和边界
-3. examples 提供 2-3 个典型对话示例
-4. variables 定义 1-3 个用户可调的参数
-5. price 根据技能复杂度和价值合理定价 (10-100元)
-6. tags 用中文标签，3-5 个
-7. 只输出 YAML，不要包含其他文字`;
+1. name 必须是 kebab-case，仅英文小写字母和连字符 (如 "xhs-helper")
+2. category 必须是以下之一: education, productivity, creative, lifestyle, business, health, tech, other
+3. price 必须是对象格式: { amount: 39.9, currency: "CNY" }  (NOT 纯数字!)
+4. prompts.system 用第一人称，明确技能的角色和边界
+5. examples 提供 2-3 个典型对话示例
+6. variables 定义 1-3 个用户可调的参数
+7. tags 用中文标签，3-5 个
+8. YAML 中的引号必须正确闭合，多行字符串用 | 符号
+9. 只输出 YAML，不要包含其他文字或代码块标记`;
 
 /**
  * 生成 skills.yml 和免费预览版

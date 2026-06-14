@@ -9,6 +9,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { logger } from "../../shared/logger.js";
 import { ensureDir, writeFileSafe } from "../../shared/fs.js";
 import { generateSkillFromDescription } from "../../llm/skill-generator.js";
+import { parse as parseYaml } from "yaml";
 
 // 内置模板目录 (相对于项目根)
 const TEMPLATES_DIR = resolve(process.cwd(), "templates");
@@ -25,16 +26,6 @@ export function createInitCommand(): Command {
     .action(async (name, options) => {
       const category = options.category ?? "other";
       const templateName = options.template ?? name;
-      const outputDir = resolve(options.output, name ?? templateName);
-
-      // 检查是否已存在
-      if (existsSync(outputDir) && !options.yes) {
-        logger.warn(`目录已存在: ${outputDir}`);
-        logger.info("使用 -y 跳过确认或指定不同的名称");
-        return;
-      }
-
-      logger.title(`初始化技能: ${name ?? templateName}`);
 
       // 尝试加载模板
       let templateYaml: string | null = loadTemplate(templateName, category);
@@ -47,27 +38,45 @@ export function createInitCommand(): Command {
         } catch (err) {
           logger.error(`AI 生成失败: ${(err as Error).message}`);
           logger.info("将使用最小化骨架作为替代");
-          if (!name) {
-            // 从描述推断一个 kebab-case 名称
-            name = options.from
-              .replace(/[^\w\s-]/g, "")
-              .trim()
-              .toLowerCase()
-              .replace(/\s+/g, "-")
-              .slice(0, 50);
-          }
-          templateYaml = generateMinimalYaml(name, category, options.from);
+          templateYaml = generateMinimalYaml(name ?? "new-skill", category, options.from);
         }
       }
 
       if (!templateYaml) {
         templateYaml = generateMinimalYaml(name ?? "new-skill", category, options.from);
-        logger.warn(`模板 "${templateName}" 不存在，已生成最小化骨架`);
+        if (templateName) {
+          logger.warn(`模板 "${templateName}" 不存在，已生成最小化骨架`);
+        }
+      }
+
+      // 从生成的 YAML 推断名称 (如果尚未指定)
+      if (!name) {
+        const parsed = parseYaml(templateYaml);
+        if (parsed && typeof parsed === "object" && "meta" in parsed) {
+          name = (parsed as Record<string, unknown>).meta && typeof (parsed as Record<string, unknown>).meta === "object"
+            ? ((parsed as Record<string, { name?: string }>).meta as Record<string, string>).name
+            : undefined;
+        }
+        if (!name) {
+          name = options.from
+            ? options.from.replace(/[^\w\s-]/g, "").trim().toLowerCase().replace(/\s+/g, "-").slice(0, 50)
+            : "new-skill";
+        }
+      }
+
+      const outputDir = resolve(options.output, name);
+      logger.title(`初始化技能: ${name}`);
+
+      // 检查是否已存在
+      if (existsSync(outputDir) && !options.yes) {
+        logger.warn(`目录已存在: ${outputDir}`);
+        logger.info("使用 -y 跳过确认或指定不同的名称");
+        return;
       }
 
       // 写入文件
       ensureDir(outputDir);
-      const yamlPath = join(outputDir, `${name ?? templateName}.skill.yml`);
+      const yamlPath = join(outputDir, `${name}.skill.yml`);
       writeFileSafe(yamlPath, templateYaml);
 
       logger.success(`技能已创建: ${yamlPath}`);

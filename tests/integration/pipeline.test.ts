@@ -3,10 +3,9 @@
  *
  * 端到端验证从 YAML 定义到可分发产物的全流程。
  */
-import { describe, it, before, after } from "node:test";
+import { describe, it, before } from "node:test";
 import assert from "node:assert/strict";
 import { resolve } from "node:path";
-import { existsSync, mkdirSync, rmSync, readFileSync } from "node:fs";
 import { loadSkill } from "../../src/core/skill-loader.js";
 import { resolveSkill } from "../../src/core/skill-resolver.js";
 import { compileForPackager, compileToMessages } from "../../src/core/skill-compiler.js";
@@ -16,7 +15,6 @@ import { GenericPackager } from "../../src/packager/generic.js";
 import { generateMarketingContent } from "../../src/marketing/note-generator.js";
 
 const FIXTURES_DIR = resolve(import.meta.dirname ?? __dirname, "../fixtures");
-const TMP_DIR = resolve(import.meta.dirname ?? __dirname, "../.tmp-integration");
 
 describe("完整管道: YAML → 打包产物", () => {
   before(() => {

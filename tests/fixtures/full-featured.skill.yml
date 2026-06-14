@@ -1,0 +1,71 @@
+meta:
+  name: full-test-skill
+  title: "完整功能测试技能"
+  version: "1.2.3"
+  category: education
+  description: "用于测试所有字段和功能的技能定义"
+  author: "@fulltest"
+  price:
+    amount: 68.8
+    currency: CNY
+    trialDays: 7
+  tags: [test, education, full]
+  icon: "./icon.png"
+  cover: "./cover.png"
+
+prompts:
+  system: |
+    你是一位专业的教育助手。
+    学生水平：{{level}}
+    {{#scene}}场景：{{scene}}{{/scene}}
+
+  user: |
+    {{message}}
+
+  examples:
+    - user: "What is 2+2?"
+      assistant: "2+2 equals 4!"
+    - user: "Explain gravity"
+      assistant: "Gravity is a fundamental force..."
+
+  greeting: "Hello! I'm ready to help."
+
+variables:
+  - name: level
+    label: "水平"
+    type: select
+    default: "intermediate"
+    options: [beginner, elementary, intermediate, advanced]
+  - name: scene
+    label: "场景"
+    type: string
+    default: "general"
+  - name: message
+    label: "消息"
+    type: string
+
+constraints:
+  preferredModel: claude-sonnet-4-6
+  maxTokens: 2048
+  temperature: 0.7
+  maxTurns: 50
+
+evaluation:
+  tests:
+    - description: "基本数学测试"
+      input:
+        message: "1+1=?"
+        level: "beginner"
+      expect:
+        contains: ["2"]
+      forbid: ["error", "wrong"]
+
+distribution:
+  targets:
+    - claude-code
+    - openai-gpt
+    - generic
+  assets:
+    - "./cover.png"
+    - "./icon.png"
+  readme: "./README.md"

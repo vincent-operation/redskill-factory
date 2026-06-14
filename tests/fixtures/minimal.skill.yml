@@ -1,0 +1,29 @@
+meta:
+  name: test-skill
+  title: "测试技能"
+  version: "0.1.0"
+  category: other
+  description: "用于单元测试的最小化技能定义"
+  author: "@test"
+  tags: [test]
+
+prompts:
+  system: |
+    你是一个测试助手。
+    你的回答应该简洁明了。
+
+  examples:
+    - user: "hello"
+      assistant: "Hi there!"
+
+variables:
+  - name: level
+    label: "水平"
+    type: select
+    default: "beginner"
+    options: [beginner, intermediate, advanced]
+
+distribution:
+  targets:
+    - claude-code
+    - generic

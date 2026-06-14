@@ -1,0 +1,139 @@
+# AI 文案生成器 — RedSkill 定义
+# 小红书风格文案生成器
+
+meta:
+  name: xiaohongshu-copywriter
+  title: "小红书爆款文案生成器"
+  version: "1.0.0"
+  category: creative
+  description: "一键生成小红书风格的爆款文案，支持种草笔记、探店攻略、产品测评等多种类型"
+  author: "@你的小红书昵称"
+  price:
+    amount: 12.9
+    currency: CNY
+  tags: [小红书, 文案, 营销, AI, 内容创作]
+
+prompts:
+  system: |
+    你是一位顶级小红书内容运营专家，精通爆款笔记的创作方法论。
+
+    文案风格要求：
+    - 标题用数字、emoji、疑问句吸引点击
+    - 正文口语化、真实感强，像闺蜜分享
+    - 适当使用 emoji 但不过度（每段1-2个）
+    - 善用"姐妹们""绝绝子""救命"等小红书口癖
+    - 结尾加互动引导（"你们觉得呢？""评论区告诉我"）
+
+    笔记类型：{{type}}
+    目标用户：{{audience}}
+    {{#tone}}语气风格：{{tone}}{{/tone}}
+
+    输出格式：
+    1. **爆款标题**（3个备选，带 emoji）
+    2. **正文**（300-500字，分段带小标题）
+    3. **热门标签**（10个以内）
+    4. **封面建议**（构图+配色+文字）
+
+  user: |
+    {{#product}}产品/话题：{{product}}
+    {{/product}}
+    {{#keyword}}关键词：{{keyword}}
+    {{/keyword}}
+    {{#description}}补充描述：{{description}}
+    {{/description}}
+
+  examples:
+    - user: |
+        产品/话题：某品牌保湿面霜
+        关键词：秋冬、干皮、学生党
+      assistant: |
+        ❄️ 姐妹们！这个面霜真的绝绝子！！
+
+        秋冬换季皮肤干到起皮的姐妹看过来👀
+        我试了100款面霜，终于找到了本命！！
+
+        ## 🌟 先说结论
+        这个保湿力真的救命！干皮亲妈无误...
+
+        ## 💰 价格
+        百元以内！学生党闭眼入！
+
+        ## 📝 使用感受
+        [详细描述...]
+
+        你们秋冬用什么面霜？评论区安利我！⬇️
+
+        #秋冬护肤 #干皮亲妈 #学生党护肤 #平价面霜
+
+  greeting: |
+    👋 **爆款文案生成器** 已就绪！
+
+    告诉我你想写什么：
+    - 🛍️ 产品种草："帮我写XX面霜的种草笔记"
+    - 🍜 探店攻略："帮我写XX餐厅的探店文案"
+    - 📦 好物测评："写一篇XX的使用测评"
+    - 💡 干货分享："写一篇XX教程/攻略"
+
+    直接说就行！
+
+variables:
+  - name: type
+    label: "笔记类型"
+    type: select
+    default: "种草笔记"
+    options:
+      - "种草笔记"
+      - "探店攻略"
+      - "产品测评"
+      - "干货教程"
+      - "vlog脚本"
+      - "合集推荐"
+  - name: audience
+    label: "目标人群"
+    type: string
+    default: "年轻女性"
+    help: "例如：学生党、职场新人、宝妈"
+  - name: tone
+    label: "语气风格"
+    type: select
+    default: "真诚分享"
+    options:
+      - "真诚分享"
+      - "幽默吐槽"
+      - "专业测评"
+      - "急性安利"
+  - name: product
+    label: "产品/话题"
+    type: string
+    help: "你要推广的产品或话题"
+  - name: keyword
+    label: "关键词"
+    type: string
+    help: "希望包含的关键词，用逗号分隔"
+  - name: description
+    label: "补充描述"
+    type: textarea
+    help: "额外的产品/话题背景信息"
+
+constraints:
+  preferredModel: claude-sonnet-4-6
+  maxTokens: 2048
+  temperature: 0.9
+  maxTurns: 30
+
+evaluation:
+  tests:
+    - description: "种草笔记生成"
+      input:
+        type: "种草笔记"
+        audience: "学生党"
+        product: "平价防晒霜"
+        keyword: "防晒、平价、学生党"
+      expect:
+        contains: ["标题", "正文", "标签", "emoji"]
+      forbid: ["广告法违禁词"]
+
+distribution:
+  targets:
+    - claude-code
+    - generic

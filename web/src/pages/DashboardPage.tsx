@@ -1,7 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { useSkills } from "../hooks/useSkills.js";
 import { useTemplates } from "../hooks/useTemplates.js";
+import { api } from "../api/client.js";
 import type { TemplateSummary } from "../hooks/useTemplates.js";
+
+interface RevenueData {
+  totalRevenue: number;
+  totalOrders: number;
+  activeSkills: number;
+  averageOrderValue: number;
+  topSkills: Array<{ name: string; sales: number; revenue: number }>;
+}
 
 const CATEGORY_LABELS: Record<string, string> = {
   education: "📚 教育", productivity: "⚡ 效率", creative: "🎨 创意", lifestyle: "🌟 生活",
@@ -11,6 +21,11 @@ export function DashboardPage() {
   const { skills, loading, error, deleteSkill } = useSkills();
   const { templates } = useTemplates();
   const navigate = useNavigate();
+  const [revenue, setRevenue] = useState<RevenueData | null>(null);
+
+  useEffect(() => {
+    api.get<RevenueData>("/analytics/revenue").then(setRevenue).catch(() => {});
+  }, []);
 
   return (
     <div>
@@ -25,6 +40,39 @@ export function DashboardPage() {
           </Link>
         </div>
       </div>
+
+      {revenue && (
+        <div className="grid grid-4 mb-md">
+          <div className="card" style={{ textAlign: "center", background: "linear-gradient(135deg, #667eea, #764ba2)", color: "#fff" }}>
+            <div style={{ fontSize: 28, fontWeight: 700 }}>¥{revenue.totalRevenue.toLocaleString()}</div>
+            <div style={{ fontSize: 12, opacity: 0.8, marginTop: 4 }}>总收入</div>
+          </div>
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: "#22c55e" }}>{revenue.totalOrders}</div>
+            <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>总订单</div>
+          </div>
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: "#f59e0b" }}>{revenue.activeSkills}</div>
+            <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>在售技能</div>
+          </div>
+          <div className="card" style={{ textAlign: "center" }}>
+            <div style={{ fontSize: 28, fontWeight: 700, color: "#3b82f6" }}>¥{revenue.averageOrderValue}</div>
+            <div style={{ fontSize: 12, color: "#666", marginTop: 4 }}>平均客单价</div>
+          </div>
+        </div>
+      )}
+
+      {revenue && revenue.topSkills.length > 0 && (
+        <div className="card mb-md">
+          <h3 className="mb-sm">🏆 畅销排行</h3>
+          {revenue.topSkills.map((s, i) => (
+            <div key={s.name} className="flex-between" style={{ padding: "8px 0", borderBottom: i < revenue.topSkills.length - 1 ? "1px solid var(--color-border)" : "none" }}>
+              <span>#{i + 1} <strong>{s.name}</strong></span>
+              <span className="text-secondary text-sm">{s.sales} 单 · ¥{s.revenue}</span>
+            </div>
+          ))}
+        </div>
+      )}
 
       {error && <div className="card mt-md" style={{ border: "1px solid var(--color-error)", color: "var(--color-error)" }}>{error}</div>}
 

@@ -5,6 +5,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert/strict";
 import { ClaudeCodePackager } from "../../src/packager/claude-code.js";
 import { GenericPackager } from "../../src/packager/generic.js";
+import { OpenAiGptPackager } from "../../src/packager/openai-gpt.js";
 import type { PackagerInput } from "../../src/types/package.js";
 
 const sampleInput: PackagerInput = {
@@ -96,5 +97,34 @@ describe("GenericPackager", () => {
     const output = await packager.package(inputNoUser);
     const hasUserTxt = output.files.some((f) => f.path === "prompts/user.txt");
     assert.equal(hasUserTxt, false);
+  });
+});
+
+describe("OpenAiGptPackager", () => {
+  const packager = new OpenAiGptPackager();
+
+  it("应生成正确的 target", () => {
+    assert.equal(packager.target, "openai-gpt");
+  });
+
+  it("应生成 gpt-config.json + README.md", async () => {
+    const output = await packager.package(sampleInput);
+    const paths = output.files.map((f) => f.path);
+    assert.ok(paths.includes("gpt-config.json"));
+    assert.ok(paths.includes("README.md"));
+  });
+
+  it("gpt-config.json 应包含 instructions 字段", async () => {
+    const output = await packager.package(sampleInput);
+    const configFile = output.files.find((f) => f.path === "gpt-config.json")!;
+    const config = JSON.parse(configFile.content);
+    assert.equal(config.name, "测试技能");
+    assert.ok(config.instructions.length > 0);
+    assert.ok(config.description.length > 0);
+  });
+
+  it("应生成正确的目录名", async () => {
+    const output = await packager.package(sampleInput);
+    assert.equal(output.directoryName, "test-skill-openai-gpt");
   });
 });

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { api } from "../api/client.js";
 import { useSkill } from "../hooks/useSkills.js";
 
-const ALL_TARGETS = ["claude-code", "generic"];
+const ALL_TARGETS = ["claude-code", "openai-gpt", "generic"];
 
 interface BuildOutput {
   target: string;

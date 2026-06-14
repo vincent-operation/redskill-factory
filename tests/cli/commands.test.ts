@@ -10,6 +10,7 @@ import { findSkillFiles } from "../../src/shared/fs.js";
 import { registerPackager, packageSkill } from "../../src/packager/registry.js";
 import { ClaudeCodePackager } from "../../src/packager/claude-code.js";
 import { GenericPackager } from "../../src/packager/generic.js";
+import { OpenAiGptPackager } from "../../src/packager/openai-gpt.js";
 import { resolveSkill } from "../../src/core/skill-resolver.js";
 import { compileForPackager } from "../../src/core/skill-compiler.js";
 
@@ -75,6 +76,7 @@ describe("CLI: build (packaging pipeline)", () => {
   before(() => {
     registerPackager(new ClaudeCodePackager());
     registerPackager(new GenericPackager());
+    registerPackager(new OpenAiGptPackager());
   });
 
   it("应将 minimal skill 打包为 claude-code 格式", async () => {

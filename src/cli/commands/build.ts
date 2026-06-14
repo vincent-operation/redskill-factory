@@ -9,6 +9,7 @@ import { compileForPackager } from "../../core/skill-compiler.js";
 import { packageSkill, registerPackager } from "../../packager/registry.js";
 import { ClaudeCodePackager } from "../../packager/claude-code.js";
 import { GenericPackager } from "../../packager/generic.js";
+import { OpenAiGptPackager } from "../../packager/openai-gpt.js";
 import { writeFileSafe, ensureDir, findSkillFiles } from "../../shared/fs.js";
 import { logger } from "../../shared/logger.js";
 import { statSync } from "node:fs";
@@ -17,6 +18,7 @@ import type { DistributionTarget } from "../../types/skill.js";
 // 注册内置打包器
 registerPackager(new ClaudeCodePackager());
 registerPackager(new GenericPackager());
+registerPackager(new OpenAiGptPackager());
 
 export function createBuildCommand(): Command {
   return new Command("build")

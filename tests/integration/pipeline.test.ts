@@ -12,6 +12,7 @@ import { compileForPackager, compileToMessages } from "../../src/core/skill-comp
 import { packageSkill, registerPackager, listPackagers } from "../../src/packager/registry.js";
 import { ClaudeCodePackager } from "../../src/packager/claude-code.js";
 import { GenericPackager } from "../../src/packager/generic.js";
+import { OpenAiGptPackager } from "../../src/packager/openai-gpt.js";
 import { generateMarketingContent } from "../../src/marketing/note-generator.js";
 
 const FIXTURES_DIR = resolve(import.meta.dirname ?? __dirname, "../fixtures");
@@ -20,6 +21,7 @@ describe("完整管道: YAML → 打包产物", () => {
   before(() => {
     registerPackager(new ClaudeCodePackager());
     registerPackager(new GenericPackager());
+    registerPackager(new OpenAiGptPackager());
   });
 
   it("minimal skill: load → resolve → compile → package", async () => {

@@ -10,12 +10,14 @@ import { loadConfig, checkRequiredKeys } from "../shared/config.js";
 import { registerPackager } from "../packager/registry.js";
 import { ClaudeCodePackager } from "../packager/claude-code.js";
 import { GenericPackager } from "../packager/generic.js";
+import { OpenAiGptPackager } from "../packager/openai-gpt.js";
 import { existsSync } from "node:fs";
 import { resolve } from "node:path";
 
 // 注册内置打包器
 registerPackager(new ClaudeCodePackager());
 registerPackager(new GenericPackager());
+registerPackager(new OpenAiGptPackager());
 
 const app = createApp();
 const port = parseInt(process.env.RFS_SERVER_PORT ?? "3001", 10);

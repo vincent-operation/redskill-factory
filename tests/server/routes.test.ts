@@ -8,6 +8,7 @@ import { createApp } from "../../src/server/app.js";
 import { registerPackager } from "../../src/packager/registry.js";
 import { ClaudeCodePackager } from "../../src/packager/claude-code.js";
 import { GenericPackager } from "../../src/packager/generic.js";
+import { OpenAiGptPackager } from "../../src/packager/openai-gpt.js";
 
 let server: Server;
 let baseUrl: string;
@@ -41,6 +42,7 @@ before(async () => {
   // Register packagers (done in server/index.ts but we're testing app.ts directly)
   registerPackager(new ClaudeCodePackager());
   registerPackager(new GenericPackager());
+  registerPackager(new OpenAiGptPackager());
 
   const app = createApp();
   server = createServer(app);

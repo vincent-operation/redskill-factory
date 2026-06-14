@@ -7,6 +7,7 @@
 import { Router } from "express";
 import { resolve } from "node:path";
 import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
+import { loadConfig } from "../../shared/config.js";
 import { loadSkill } from "../../core/skill-loader.js";
 import { NotFoundError, ValidationError } from "../middleware/error-handler.js";
 
@@ -41,6 +42,31 @@ function saveSeller(profile: SellerProfile): void {
     JSON.stringify(profile, null, 2),
   );
 }
+
+/**
+ * GET /api/v1/seller/payment-status — 支付配置状态
+ */
+sellerRouter.get("/payment-status", (_req, res) => {
+  const config = loadConfig();
+  const wechatApiMode = !!(process.env.WECHAT_APP_ID && process.env.WECHAT_MCH_ID);
+  const alipayApiMode = !!(process.env.ALIPAY_APP_ID && process.env.ALIPAY_PRIVATE_KEY);
+
+  res.json({
+    wechat: {
+      available: true,
+      mode: wechatApiMode ? "api" : "qr",
+      apiConfigured: wechatApiMode,
+    },
+    alipay: {
+      available: true,
+      mode: alipayApiMode ? "api" : "qr",
+      apiConfigured: alipayApiMode,
+    },
+    recommendation: wechatApiMode || alipayApiMode
+      ? "API mode active — automatic payment verification enabled"
+      : "QR mode active — configure merchant keys in .env for automatic verification",
+  });
+});
 
 /**
  * GET /api/v1/seller/:id — 获取卖家公开资料

@@ -26,7 +26,11 @@ export function createApp(): express.Express {
   app.use(express.json({ limit: "5mb" }));
   app.use(requestLogger);
 
-  // API Routes
+  return app;
+}
+
+/** Mount all API routes (call after createApp, before static/SPA) */
+export function mountRoutes(app: express.Express): void {
   app.use("/api/v1/skills", skillsRouter);
   app.use("/api/v1/templates", templatesRouter);
   app.use("/api/v1/test", testRouter);
@@ -37,9 +41,5 @@ export function createApp(): express.Express {
   app.use("/api/v1/payment", paymentRouter);
   app.use("/api/v1/seller", sellerRouter);
   app.use("/api/v1/health", healthRouter);
-
-  // Error handling
   app.use(errorHandler);
-
-  return app;
 }

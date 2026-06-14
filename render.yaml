@@ -1,0 +1,21 @@
+# Render.com — One-click Deploy
+# https://render.com — Free tier available
+services:
+  - type: web
+    name: redskill-factory
+    env: node
+    region: singapore
+    plan: free
+    buildCommand: |
+      npm ci
+      npm run build:all
+    startCommand: node dist/server/index.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: RFS_SERVER_PORT
+        value: "3001"
+      - key: DEEPSEEK_API_KEY
+        sync: false
+      - key: ANTHROPIC_AUTH_TOKEN
+        sync: false

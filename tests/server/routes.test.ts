@@ -4,7 +4,7 @@
 import { describe, it, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { createServer, type Server } from "node:http";
-import { createApp } from "../../src/server/app.js";
+import { createApp, mountRoutes } from "../../src/server/app.js";
 import { registerPackager } from "../../src/packager/registry.js";
 import { ClaudeCodePackager } from "../../src/packager/claude-code.js";
 import { GenericPackager } from "../../src/packager/generic.js";
@@ -45,6 +45,7 @@ before(async () => {
   registerPackager(new OpenAiGptPackager());
 
   const app = createApp();
+  mountRoutes(app);
   server = createServer(app);
   await new Promise<void>((resolve) => {
     server.listen(0, () => {

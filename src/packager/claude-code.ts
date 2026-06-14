@@ -22,6 +22,12 @@ export class ClaudeCodePackager implements Packager {
     const skillMd = this.generateSkillMarkdown(input);
     files.push({ path: `${input.meta.name}.md`, content: skillMd });
 
+    // 如果有 license，生成 license 文件
+    if (input.license) {
+      const licenseFile = this.generateLicenseFile(input);
+      files.push({ path: "LICENSE.txt", content: licenseFile });
+    }
+
     // 生成 README
     const readme = this.generateReadme(input);
     files.push({ path: "README.md", content: readme });
@@ -128,6 +134,24 @@ export class ClaudeCodePackager implements Packager {
       ...(input.meta.price
         ? [`## 购买`, "", `此 Skill 售价 ¥${input.meta.price.amount}。请在 RedSkill 商店搜索 "${input.meta.name}" 购买。`]
         : []),
+    ].join("\n");
+  }
+
+  private generateLicenseFile(input: PackagerInput): string {
+    const license = input.license!;
+    return [
+      "============================================",
+      "  RedSkill Factory — 技能许可证",
+      "============================================",
+      "",
+      `  技能: ${input.meta.name}`,
+      `  密钥: ${license.key}`,
+      `  购买者: ${license.buyerId}`,
+      `  签发日期: ${license.issuedAt}`,
+      "",
+      "  本技能受 RedSkill 许可证保护。",
+      "  禁止未经授权的分享、转售、修改。",
+      "============================================",
     ].join("\n");
   }
 

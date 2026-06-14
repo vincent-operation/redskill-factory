@@ -23,6 +23,12 @@ export interface PackagerInput {
   variables: Record<string, unknown>;
   assets: string[];
   readmePath?: string;
+  /** License 信息 (购买后打包时传入) */
+  license?: {
+    key: string;
+    buyerId: string;
+    issuedAt: string;
+  };
 }
 
 /** 打包器输出 */

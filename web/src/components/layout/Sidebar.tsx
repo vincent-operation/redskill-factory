@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 const links = [
   { to: "/", label: "仪表板", emoji: "📊" },
   { to: "/store", label: "技能商店", emoji: "🛍️" },
+  { to: "/seller", label: "卖家中心", emoji: "💰" },
   { to: "/templates", label: "模板库", emoji: "📦" },
   { to: "/skills/new", label: "创建技能", emoji: "➕" },
 ];

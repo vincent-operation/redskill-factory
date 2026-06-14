@@ -7,6 +7,7 @@ import { BuildPage } from "./pages/BuildPage.js";
 import { MarketPage } from "./pages/MarketPage.js";
 import { TemplatesPage } from "./pages/TemplatesPage.js";
 import { StorePage } from "./pages/StorePage.js";
+import { SellerPage } from "./pages/SellerPage.js";
 import { SkillLandingPage } from "./pages/SkillLandingPage.js";
 
 export function App() {
@@ -20,6 +21,7 @@ export function App() {
         <Routes>
           <Route path="/" element={<DashboardPage />} />
           <Route path="/store" element={<StorePage />} />
+          <Route path="/seller" element={<SellerPage />} />
           <Route path="/skills/new" element={<SkillEditorPage />} />
           <Route path="/skills/:name/edit" element={<SkillEditorPage />} />
           <Route path="/skills/:name/test" element={<SkillTesterPage />} />

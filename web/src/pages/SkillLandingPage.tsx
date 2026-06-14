@@ -41,6 +41,7 @@ export function SkillLandingPage() {
   const [buying, setBuying] = useState(false);
   const [purchase, setPurchase] = useState<PurchaseResult | null>(null);
   const [countdown, setCountdown] = useState(0);
+  const [payMethod, setPayMethod] = useState<"wechat" | "alipay">("wechat");
 
   useEffect(() => {
     // Fetch skill from store API
@@ -71,13 +72,26 @@ export function SkillLandingPage() {
     if (!txnId.trim()) return;
     setBuying(true);
     try {
-      const result = await api.post<PurchaseResult>("/store/purchase", {
+      // 使用新的支付验证 API
+      const result = await api.post<PurchaseResult>("/payment/verify", {
+        orderId: `TXN-${Date.now()}`,
+        txnId: txnId.trim(),
         skillName: name,
         buyerId,
-        txnId,
         ref,
       });
-      setPurchase(result);
+      // 如果 verify 失败，回退到 store/purchase
+      if (!result.success) {
+        const fallback = await api.post<PurchaseResult>("/store/purchase", {
+          skillName: name,
+          buyerId,
+          txnId: txnId.trim(),
+          ref,
+        });
+        setPurchase(fallback);
+      } else {
+        setPurchase(result);
+      }
       setStep("done");
     } catch {
       alert("确认失败，请检查交易号是否正确");
@@ -145,13 +159,39 @@ export function SkillLandingPage() {
       {/* Step: Payment */}
       {step === "pay" && (
         <div style={{ textAlign: "center" }}>
-          <div className="card" style={{ background: "#fff8f0", border: "2px solid #ff6b35", marginBottom: 20 }}>
-            <h3 className="mb-sm">📱 请完成支付</h3>
+          {/* Payment method selector */}
+          <div className="flex gap-sm mb-md" style={{ justifyContent: "center" }}>
+            <button
+              onClick={() => setPayMethod("wechat")}
+              style={{
+                padding: "12px 24px", borderRadius: 8, border: payMethod === "wechat" ? "2px solid #07c160" : "1px solid #ddd",
+                background: payMethod === "wechat" ? "#f0fdf4" : "#fff", fontWeight: payMethod === "wechat" ? 700 : 400,
+              }}
+            >
+              💚 微信支付
+            </button>
+            <button
+              onClick={() => setPayMethod("alipay")}
+              style={{
+                padding: "12px 24px", borderRadius: 8, border: payMethod === "alipay" ? "2px solid #1677ff" : "1px solid #ddd",
+                background: payMethod === "alipay" ? "#f0f5ff" : "#fff", fontWeight: payMethod === "alipay" ? 700 : 400,
+              }}
+            >
+              💙 支付宝
+            </button>
+          </div>
+
+          <div className="card" style={{ background: payMethod === "wechat" ? "#f0fdf4" : "#f0f5ff", border: `2px solid ${payMethod === "wechat" ? "#07c160" : "#1677ff"}`, marginBottom: 20 }}>
+            <h3 className="mb-sm">{payMethod === "wechat" ? "💚 微信支付" : "💙 支付宝"}</h3>
             <div style={{ fontSize: 40, fontWeight: 700, color: "#ff6b35", margin: "16px 0" }}>¥{skill.price?.amount ?? 0}</div>
             <div style={{ background: "#fff", padding: 16, borderRadius: 8, marginBottom: 12 }}>
-              <div style={{ fontSize: 14, color: "#666", marginBottom: 8 }}>请使用微信/支付宝扫码支付至：</div>
+              <div style={{ fontSize: 14, color: "#666", marginBottom: 8 }}>
+                {payMethod === "wechat"
+                  ? "打开微信 → 扫一扫 → 转账至"
+                  : "打开支付宝 → 扫一扫 → 转账至"}
+              </div>
               <div style={{ fontSize: 18, fontWeight: 600 }}>{skill.author}</div>
-              <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>支付时请备注: {buyerId}</div>
+              <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>备注: {buyerId}</div>
             </div>
             {countdown > 0 && (
               <div style={{ fontSize: 13, color: "#999" }}>
@@ -162,11 +202,15 @@ export function SkillLandingPage() {
 
           <div className="card" style={{ marginBottom: 20 }}>
             <h4 className="mb-sm">✅ 支付完成后</h4>
-            <p className="text-secondary text-sm mb-sm">输入支付平台的交易号（微信/支付宝的转账单号）</p>
+            <p className="text-secondary text-sm mb-sm">
+              {payMethod === "wechat"
+                ? "打开微信 → 我 → 服务 → 钱包 → 账单 → 复制转账单号"
+                : "打开支付宝 → 我的 → 账单 → 复制交易号"}
+            </p>
             <input
               value={txnId}
               onChange={(e) => setTxnId(e.target.value)}
-              placeholder="例如: 202606151234567890123456"
+              placeholder={payMethod === "wechat" ? "微信转账单号: 1000..." : "支付宝交易号: 2026..."}
               style={{ width: "100%", marginBottom: 12 }}
             />
             <button

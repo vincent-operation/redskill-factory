@@ -10,6 +10,7 @@ import { buildRouter } from "./routes/build.js";
 import { marketRouter } from "./routes/market.js";
 import { storeRouter } from "./routes/store.js";
 import { analyticsRouter } from "./routes/analytics.js";
+import { paymentRouter } from "./routes/payment.js";
 import { healthRouter } from "./routes/health.js";
 import { errorHandler } from "./middleware/error-handler.js";
 import { requestLogger } from "./middleware/logger.js";
@@ -32,6 +33,7 @@ export function createApp(): express.Express {
   app.use("/api/v1/market", marketRouter);
   app.use("/api/v1/store", storeRouter);
   app.use("/api/v1/analytics", analyticsRouter);
+  app.use("/api/v1/payment", paymentRouter);
   app.use("/api/v1/health", healthRouter);
 
   // Error handling

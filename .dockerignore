@@ -1,0 +1,14 @@
+node_modules/
+dist/
+web/node_modules/
+web/dist/
+skills/
+.env
+.git/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+tests/
+.claude/
+.remember/

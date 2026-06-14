@@ -9,6 +9,7 @@ import { skillDefinitionSchema } from "../../core/skill-definition.js";
 import { findSkillFiles, writeFileSafe, isSubPath } from "../../shared/fs.js";
 import { parse as parseYaml } from "yaml";
 import { NotFoundError, ValidationError } from "../middleware/error-handler.js";
+import { generateSkillFromDescription } from "../../llm/skill-generator.js";
 
 /** 校验技能名安全且格式正确 */
 function validateSkillName(name: string): void {
@@ -161,6 +162,24 @@ skillsRouter.delete("/:name", (req, res) => {
 
   rmSync(skillDir, { recursive: true });
   res.json({ success: true });
+});
+
+/**
+ * POST /api/v1/skills/generate — AI 生成 skill.yml
+ */
+skillsRouter.post("/generate", async (req, res) => {
+  const { description, category } = req.body as {
+    description?: string;
+    category?: string;
+  };
+  if (!description) throw new ValidationError("description is required");
+
+  try {
+    const yaml = await generateSkillFromDescription(description, category ?? "other");
+    res.json({ success: true, yaml });
+  } catch (err) {
+    throw new ValidationError(`AI generation failed: ${(err as Error).message}`);
+  }
 });
 
 /**

@@ -32,6 +32,8 @@ function EditorInner({ isNew, skillName, templateName, templateCat }: {
   const [tab, setTab] = useState("meta");
   const [yamlPreview, setYamlPreview] = useState("");
   const [valResult, setValResult] = useState<{ success: boolean; errors: Array<{ path: string; message: string }>; warnings: string[] } | null>(null);
+  const [aiDesc, setAiDesc] = useState("");
+  const [generating, setGenerating] = useState(false);
 
   // Load skill data
   useEffect(() => {
@@ -47,6 +49,25 @@ function EditorInner({ isNew, skillName, templateName, templateCat }: {
   const tabs = ["meta", "prompts", "variables", "constraints", "eval", "dist"];
   const tabLabels: Record<string, string> = {
     meta: "📋 基本信息", prompts: "💬 提示词", variables: "⚙️ 变量", constraints: "🎛️ 约束", eval: "🧪 评测", dist: "📦 分发",
+  };
+
+  const handleAiGenerate = async () => {
+    if (!aiDesc.trim()) return;
+    setGenerating(true);
+    try {
+      const data = await api.post<{ success: boolean; yaml: string }>("/skills/generate", {
+        description: aiDesc,
+        category: "other",
+      });
+      if (data.success && data.yaml) {
+        dispatch({ type: "LOAD_YAML", yaml: data.yaml });
+        setAiDesc("");
+      }
+    } catch {
+      alert("AI 生成失败，请检查 API Key 配置");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   const handleSave = async () => {
@@ -90,6 +111,24 @@ function EditorInner({ isNew, skillName, templateName, templateCat }: {
           </button>
         ))}
       </div>
+
+      {isNew && (
+        <div className="card mb-md" style={{ background: "var(--color-primary-light)", border: "1px solid var(--color-primary)" }}>
+          <h4 style={{ marginBottom: 8 }}>🤖 AI 快速生成</h4>
+          <div style={{ display: "flex", gap: 8 }}>
+            <input
+              value={aiDesc}
+              onChange={(e) => setAiDesc(e.target.value)}
+              placeholder="描述你的技能，如：一个帮助小红书博主写爆款标题的AI助手"
+              style={{ flex: 1 }}
+              onKeyDown={(e) => e.key === "Enter" && handleAiGenerate()}
+            />
+            <button className="btn-primary" onClick={handleAiGenerate} disabled={generating || !aiDesc.trim()}>
+              {generating ? "生成中..." : "✨ 生成"}
+            </button>
+          </div>
+        </div>
+      )}
 
       {valResult && !valResult.success && (
         <div className="card mb-md" style={{ border: "1px solid var(--color-error)" }}>

@@ -145,6 +145,12 @@ export function SkillLandingPage() {
               <li>免费更新</li>
             </ul>
           </div>
+          <div className="flex gap-sm mb-md" style={{ justifyContent: "center" }}>
+            <span style={{ background: "#fef3c7", padding: "4px 12px", borderRadius: 16, fontSize: 12, color: "#92400e" }}>💚 微信支付</span>
+            <span style={{ background: "#dbeafe", padding: "4px 12px", borderRadius: 16, fontSize: 12, color: "#1e40af" }}>💙 支付宝</span>
+            <span style={{ background: "#f0fdf4", padding: "4px 12px", borderRadius: 16, fontSize: 12, color: "#166534" }}>🔐 永久有效</span>
+            <span style={{ background: "#fef2f2", padding: "4px 12px", borderRadius: 16, fontSize: 12, color: "#991b1b" }}>⚡ 限时优惠</span>
+          </div>
           <div className="card" style={{ textAlign: "left", marginBottom: 20 }}>
             <h3 className="mb-sm">🏷️ 标签</h3>
             <div className="flex-wrap gap-sm">

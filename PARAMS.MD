@@ -167,6 +167,11 @@ skill.yml → SkillLoader (parse + validate)
 | 2026-06-14 | CI/CD: GitHub Actions workflow (build+test+lint, Node 20/22) | — |
 | 2026-06-14 | README: 更新测试数、Web UI、AI 生成、CI badge | — |
 | 2026-06-14 | 集成测试: E2E 管道 + 模板系统 + 产物验证 + 性能 (7 tests) | 构建+57测试+0 lint |
+| 2026-06-14 | 支付系统: 微信+支付宝双模式 (QR/API) + 卖家中心 + 商店 + 落地页 | 构建+57测试 |
+| 2026-06-14 | 生产服务器: 所有路由修复, SPA fallback, render.yaml 部署配置 | 8/8 端点验证 |
+| 2026-06-14 | 新模板: xhs-growth(¥39.9) + resume-pro(¥49.9) + meal-planner(¥29.9) | 构建+61测试+0 lint |
+| 2026-06-14 | AI生成修复: init --from bug + post-processing 格式修正 | 构建+61测试 |
+| 2026-06-14 | ESLint 清零: 12 warnings → 0 | 0 warnings |
 
 ## 9. 使用说明
 

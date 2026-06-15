@@ -14,6 +14,7 @@ export function SellerPage() {
     publishedSkills: string[]; totalRevenue: number;
   } | null>(null);
   const [earnings, setEarnings] = useState<{ totalRevenue: number; totalOrders: number; bySkill: Record<string, number> } | null>(null);
+  const [orders, setOrders] = useState<Array<{ orderId: string; skillName: string; buyerId: string; amount: number; method: string; license: string; purchasedAt: string }>>([]);
   const [loading, setLoading] = useState(false);
   const { skills } = useSkills();
 
@@ -54,6 +55,11 @@ export function SellerPage() {
     try {
       const data = await api.get<{ totalRevenue: number; totalOrders: number; bySkill: Record<string, number> }>(`/seller/${id}/earnings`);
       setEarnings(data);
+    } catch {}
+    // Also load orders
+    try {
+      const data = await api.get<{ orders: Array<{ orderId: string; skillName: string; buyerId: string; amount: number; method: string; license: string; purchasedAt: string }>; total: number }>(`/seller/${id}/orders`);
+      setOrders(data.orders);
     } catch {}
   };
 
@@ -162,6 +168,37 @@ export function SellerPage() {
                   )}
                 </div>
               ))
+            )}
+          </div>
+
+          {/* Recent Orders */}
+          <div className="card mb-md">
+            <h3 className="mb-sm">📋 最近订单 ({orders.length})</h3>
+            {orders.length === 0 ? (
+              <p className="text-secondary text-sm">暂无订单，分享你的技能链接开始赚钱吧</p>
+            ) : (
+              <div style={{ overflowX: "auto" }}>
+                <table style={{ width: "100%", fontSize: 13, borderCollapse: "collapse" }}>
+                  <thead>
+                    <tr style={{ borderBottom: "2px solid var(--color-border)" }}>
+                      <th style={{ padding: "8px 4px", textAlign: "left" }}>技能</th>
+                      <th style={{ padding: "8px 4px", textAlign: "right" }}>金额</th>
+                      <th style={{ padding: "8px 4px", textAlign: "center" }}>支付</th>
+                      <th style={{ padding: "8px 4px", textAlign: "right" }}>时间</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {orders.slice(0, 10).map((o) => (
+                      <tr key={o.orderId} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                        <td style={{ padding: "6px 4px" }}>{o.skillName}</td>
+                        <td style={{ padding: "6px 4px", textAlign: "right", color: "#ff6b35", fontWeight: 600 }}>¥{o.amount}</td>
+                        <td style={{ padding: "6px 4px", textAlign: "center", fontSize: 11 }}>{o.method === "wechat" ? "💚" : o.method === "alipay" ? "💙" : o.method}</td>
+                        <td style={{ padding: "6px 4px", textAlign: "right", fontSize: 11, color: "#999" }}>{new Date(o.purchasedAt).toLocaleDateString("zh-CN")}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
           </div>
 

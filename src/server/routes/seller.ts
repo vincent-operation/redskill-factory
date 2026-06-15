@@ -243,6 +243,37 @@ sellerRouter.post("/publish", (req, res) => {
 });
 
 /**
+ * GET /api/v1/seller/:id/orders — 订单列表
+ */
+sellerRouter.get("/:id/orders", (req, res) => {
+  const profile = loadSeller(req.params.id!);
+  if (!profile) throw new NotFoundError(`Seller '${req.params.id}'`);
+
+  const ordersDir = resolve(process.cwd(), ".orders");
+  const orders: Array<Record<string, unknown>> = [];
+
+  if (existsSync(ordersDir)) {
+    for (const f of readdirSync(ordersDir).filter((f: string) => f.endsWith(".json"))) {
+      const order = JSON.parse(readFileSync(resolve(ordersDir, f), "utf-8"));
+      if (profile.publishedSkills.includes(order.skillName)) {
+        orders.push({
+          orderId: order.orderId,
+          skillName: order.skillName,
+          buyerId: order.buyerId,
+          amount: order.price?.amount ?? 0,
+          method: order.paymentMethod ?? "unknown",
+          license: order.license?.key ?? null,
+          purchasedAt: order.purchasedAt,
+        });
+      }
+    }
+  }
+
+  orders.sort((a, b) => String(b.purchasedAt).localeCompare(String(a.purchasedAt)));
+  res.json({ orders: orders.slice(0, 50), total: orders.length });
+});
+
+/**
  * GET /api/v1/seller/:id/earnings — 收入概览
  */
 sellerRouter.get("/:id/earnings", (req, res) => {

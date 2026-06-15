@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>RedSkill Status</title>
+<meta http-equiv="refresh" content="60">
+<style>
+body{font-family:system-ui;max-width:600px;margin:20px auto;padding:16px;background:#0f0f23;color:#e0e0e0}
+h1{color:#ff6b35}.card{background:#1a1a2e;border-radius:12px;padding:16px;margin:12px 0}
+.big{font-size:36px;font-weight:700}.green{color:#22c55e}.orange{color:#ff6b35}.blue{color:#3b82f6}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:6px 8px;text-align:left;border-bottom:1px solid #2a2a4a}
+.progress{background:#2a2a4a;border-radius:8px;height:20px;overflow:hidden}
+.progress div{background:#ff6b35;height:100%;border-radius:8px;transition:width 1s}
+.refresh{font-size:11px;color:#666;text-align:center;margin-top:8px}
+</style></head><body>
+<h1>🏭 RedSkill Factory Status</h1>
+<div class="refresh">自动刷新 · 每60秒</div>
+
+<div class="card" id="revenue"><div class="big orange" id="rev">¥---</div>累计收入</div>
+
+<div class="grid">
+  <div class="card"><div class="big green" id="orders">0</div>总订单</div>
+  <div class="card"><div class="big blue" id="skills">0</div>在售技能</div>
+</div>
+
+<div class="card">
+  <h3>🎯 ROI 进度</h3>
+  <div class="progress"><div id="roi-bar" style="width:0%"></div></div>
+  <div id="roi-text" style="font-size:13px;margin-top:6px"></div>
+</div>
+
+<div class="card">
+  <h3>🏆 畅销排行</h3>
+  <table><thead><tr><th>#</th><th>技能</th><th>销量</th><th>收入</th></tr></thead><tbody id="ranking"></tbody></table>
+  <div id="no-data" style="color:#666;font-size:13px">暂无数据</div>
+</div>
+
+<div class="card">
+  <h3>📋 最近订单</h3>
+  <table><thead><tr><th>技能</th><th>金额</th><th>时间</th></tr></thead><tbody id="recent-orders"></tbody></table>
+</div>
+
+<script>
+async function refresh() {
+  try {
+    const revenue = await fetch('/api/v1/seller/@redskill/earnings').then(r=>r.json());
+    document.getElementById('rev').textContent = '¥' + (revenue.totalRevenue||0).toLocaleString();
+    document.getElementById('orders').textContent = revenue.totalOrders||0;
+    document.getElementById('skills').textContent = revenue.publishedSkills||0;
+
+    const roi = revenue.totalRevenue > 0 ? Math.round(revenue.totalRevenue / 0.072) : 0;
+    document.getElementById('roi-bar').style.width = Math.min(100, roi/100) + '%';
+    document.getElementById('roi-text').textContent = roi + 'x / 10,000x (' + (roi/100).toFixed(2) + '%)';
+
+    if (revenue.bySkill) {
+      const sorted = Object.entries(revenue.bySkill).sort((a,b)=>b[1]-a[1]).slice(0,5);
+      document.getElementById('ranking').innerHTML = sorted.map(([n,v],i) =>
+        '<tr><td>'+(i+1)+'</td><td>'+n+'</td><td>1</td><td>¥'+v+'</td></tr>').join('');
+    }
+
+    const orders = await fetch('/api/v1/seller/@redskill/orders').then(r=>r.json());
+    if (orders.orders) {
+      document.getElementById('recent-orders').innerHTML = orders.orders.slice(0,5).map(o =>
+        '<tr><td>'+o.skillName+'</td><td style="color:#ff6b35">¥'+o.amount+'</td><td>'+new Date(o.purchasedAt).toLocaleDateString('zh-CN')+'</td></tr>'
+      ).join('');
+    }
+  } catch(e) { console.error(e); }
+}
+refresh();
+setInterval(refresh, 60000);
+</script>
+</body></html>

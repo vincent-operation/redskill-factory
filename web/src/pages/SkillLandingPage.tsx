@@ -34,6 +34,10 @@ export function SkillLandingPage() {
   const ref = searchParams.get("ref") ?? "";
 
   const [skill, setSkill] = useState<LandingSkill | null>(null);
+  const [seller, setSeller] = useState<{
+    name: string; wechatNickname?: string; alipayAccount?: string;
+    hasWechatQR: boolean; hasAlipayQR: boolean;
+  } | null>(null);
   const [loading, setLoading] = useState(true);
   const [step, setStep] = useState<"view" | "pay" | "confirm" | "done">("view");
   const [buyerId, setBuyerId] = useState("");
@@ -52,7 +56,13 @@ export function SkillLandingPage() {
       }
       setLoading(false);
     });
-  }, [name]);
+    // Fetch seller info if ref provided
+    if (ref) {
+      api.get<{ name: string; wechatNickname?: string; alipayAccount?: string; hasWechatQR: boolean; hasAlipayQR: boolean }>(`/seller/${ref}`)
+        .then(setSeller)
+        .catch(() => {});
+    }
+  }, [name, ref]);
 
   // Simulate payment countdown
   useEffect(() => {
@@ -187,10 +197,23 @@ export function SkillLandingPage() {
             <div style={{ background: "#fff", padding: 16, borderRadius: 8, marginBottom: 12 }}>
               <div style={{ fontSize: 14, color: "#666", marginBottom: 8 }}>
                 {payMethod === "wechat"
-                  ? "打开微信 → 扫一扫 → 转账至"
-                  : "打开支付宝 → 扫一扫 → 转账至"}
+                  ? "打开微信 → 扫一扫/转账至"
+                  : "打开支付宝 → 扫一扫/转账至"}
               </div>
-              <div style={{ fontSize: 18, fontWeight: 600 }}>{skill.author}</div>
+              {seller && (
+                <div style={{ fontSize: 18, fontWeight: 600 }}>
+                  {payMethod === "wechat"
+                    ? (seller.wechatNickname || seller.name)
+                    : (seller.alipayAccount || seller.name)}
+                </div>
+              )}
+              {!seller && <div style={{ fontSize: 18, fontWeight: 600 }}>{skill.author}</div>}
+              {seller && seller.hasWechatQR && payMethod === "wechat" && (
+                <div style={{ fontSize: 11, color: "#22c55e", marginTop: 4 }}>✅ 已上传收款码</div>
+              )}
+              {seller && seller.hasAlipayQR && payMethod === "alipay" && (
+                <div style={{ fontSize: 11, color: "#22c55e", marginTop: 4 }}>✅ 已上传收款码</div>
+              )}
               <div style={{ fontSize: 12, color: "#999", marginTop: 4 }}>备注: {buyerId}</div>
             </div>
             {countdown > 0 && (

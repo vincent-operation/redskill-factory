@@ -1,0 +1,80 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Render" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "Render" [ref=e8]
+        - button "M My Workspace" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]:
+            - generic [ref=e14]: M
+            - generic "My Workspace" [ref=e15]
+            - img [ref=e16]
+      - generic [ref=e20]:
+        - navigation [ref=e21]:
+          - list [ref=e22]:
+            - listitem [ref=e23]:
+              - button "New Web Service" [ref=e26] [cursor=pointer]:
+                - generic [ref=e27]:
+                  - img [ref=e28]
+                  - generic [ref=e30]:
+                    - generic [ref=e31]: New Web Service
+                    - img [ref=e32]
+        - button "Search Ctrl + K" [ref=e35] [cursor=pointer]:
+          - img [ref=e37]
+          - text: Search
+          - generic [ref=e39]:
+            - img [ref=e40]
+            - generic [ref=e42]: Ctrl
+            - generic [ref=e43]: +
+            - generic [ref=e44]: K
+            - generic [ref=e45]: K
+      - generic [ref=e46]:
+        - button "New" [ref=e48] [cursor=pointer]:
+          - generic [ref=e49]:
+            - img [ref=e50]
+            - generic [ref=e52]: New
+        - button "Upgrade" [ref=e54] [cursor=pointer]:
+          - generic [ref=e55]:
+            - img [ref=e56]
+            - generic [ref=e58]: Upgrade
+        - button "Help" [ref=e60] [cursor=pointer]:
+          - img "Help" [ref=e61]
+        - button [ref=e66] [cursor=pointer]
+    - generic [ref=e71]:
+      - main [ref=e72]:
+        - heading "New Web Service" [level=1] [ref=e75]
+        - generic [ref=e76]:
+          - generic [ref=e79]: Source Code
+          - generic [ref=e137]:
+            - img "GitHub" [ref=e139]
+            - link "vincent-operation / redskill-factory" [ref=e141] [cursor=pointer]:
+              - /url: https://github.com/vincent-operation/redskill-factory
+              - text: vincent-operation
+              - generic [ref=e142]: /
+              - text: redskill-factory
+            - generic [ref=e143]:
+              - separator [ref=e144]: •
+              - time [ref=e146]: 35m ago
+            - button "Edit" [ref=e148] [cursor=pointer]:
+              - img [ref=e150]
+              - text: Edit
+      - generic [ref=e155]:
+        - img "Loading..." [ref=e156]
+        - generic [ref=e159]: Loading...
+  - generic:
+    - generic:
+      - generic: "0 services selected:"
+      - generic:
+        - generic:
+          - button:
+            - generic:
+              - img
+            - generic: Move
+            - img
+    - generic:
+      - separator
+      - generic:
+        - generic:
+          - button:
+            - img

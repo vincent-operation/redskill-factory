@@ -1,0 +1,59 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Render" [ref=e7] [cursor=pointer]:
+          - /url: /
+          - img "Render" [ref=e8]
+        - button "M My Workspace" [ref=e12] [cursor=pointer]:
+          - generic [ref=e13]:
+            - generic [ref=e14]: M
+            - generic "My Workspace" [ref=e15]
+            - img [ref=e16]
+      - generic [ref=e20]:
+        - navigation [ref=e21]:
+          - list [ref=e22]:
+            - listitem [ref=e23]:
+              - generic [ref=e24]:
+                - img [ref=e25]
+                - generic [ref=e30]: New Blueprint
+        - button "Search Ctrl + K" [ref=e32] [cursor=pointer]:
+          - img [ref=e34]
+          - text: Search
+          - generic [ref=e36]:
+            - img [ref=e37]
+            - generic [ref=e39]: Ctrl
+            - generic [ref=e40]: +
+            - generic [ref=e41]: K
+            - generic [ref=e42]: K
+      - generic [ref=e43]:
+        - button "New" [ref=e45] [cursor=pointer]:
+          - generic [ref=e46]:
+            - img [ref=e47]
+            - generic [ref=e49]: New
+        - button "Upgrade" [ref=e51] [cursor=pointer]:
+          - generic [ref=e52]:
+            - img [ref=e53]
+            - generic [ref=e55]: Upgrade
+        - button "Help" [ref=e57] [cursor=pointer]:
+          - img "Help" [ref=e58]
+        - button [ref=e63] [cursor=pointer]
+    - generic [ref=e69]:
+      - img "Loading..." [ref=e70]
+      - generic [ref=e73]: Loading...
+  - generic:
+    - generic:
+      - generic: "0 services selected:"
+      - generic:
+        - generic:
+          - button:
+            - generic:
+              - img
+            - generic: Move
+            - img
+    - generic:
+      - separator
+      - generic:
+        - generic:
+          - button:
+            - img

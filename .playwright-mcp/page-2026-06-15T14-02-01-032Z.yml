@@ -1,0 +1,93 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "Render" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "Render" [ref=e8]
+          - button "M My Workspace" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13]:
+              - generic [ref=e14]: M
+              - generic "My Workspace" [ref=e15]
+              - img [ref=e16]
+        - generic [ref=e20]:
+          - navigation [ref=e21]:
+            - list [ref=e22]:
+              - listitem [ref=e23]:
+                - button "New Web Service" [ref=e283] [cursor=pointer]:
+                  - generic [ref=e284]:
+                    - img [ref=e285]
+                    - generic [ref=e287]:
+                      - generic [ref=e288]: New Web Service
+                      - img [ref=e289]
+          - button "Search Ctrl + K" [ref=e31] [cursor=pointer]:
+            - img [ref=e33]
+            - text: Search
+            - generic [ref=e35]:
+              - img [ref=e36]
+              - generic [ref=e38]: Ctrl
+              - generic [ref=e39]: +
+              - generic [ref=e40]: K
+              - generic [ref=e41]: K
+        - generic [ref=e42]:
+          - button "New" [ref=e44] [cursor=pointer]:
+            - generic [ref=e45]:
+              - img [ref=e46]
+              - generic [ref=e48]: New
+          - button "Upgrade" [ref=e298] [cursor=pointer]:
+            - generic [ref=e299]:
+              - img [ref=e300]
+              - generic [ref=e302]: Upgrade
+          - button "Help" [ref=e50] [cursor=pointer]:
+            - img "Help" [ref=e51]
+          - button "v" [ref=e278] [cursor=pointer]:
+            - generic [ref=e279]: v
+      - main [ref=e304]:
+        - heading "New Web Service" [level=1] [ref=e307]
+        - generic [ref=e308]:
+          - generic [ref=e311]: Source Code
+          - generic [ref=e312]:
+            - list [ref=e313]:
+              - listitem [ref=e314]:
+                - tab "Git Provider" [selected] [ref=e315] [cursor=pointer]
+              - listitem [ref=e316]:
+                - tab "Public Git Repository" [ref=e317] [cursor=pointer]
+              - listitem [ref=e318]:
+                - tab "Existing Image" [ref=e319] [cursor=pointer]
+            - tabpanel "Git Provider" [ref=e321]:
+              - generic [ref=e325]:
+                - heading "Connect Git provider" [level=2] [ref=e329]
+                - generic [ref=e332]:
+                  - paragraph [ref=e333]: Connect your Git provider to deploy from your existing repositories.
+                  - generic [ref=e334]:
+                    - button "GitHub GitHub" [active] [ref=e336] [cursor=pointer]:
+                      - generic [ref=e337]:
+                        - img "GitHub" [ref=e338]
+                        - generic [ref=e340]: GitHub
+                    - button "GitLab" [ref=e342] [cursor=pointer]:
+                      - generic [ref=e343]:
+                        - img [ref=e344]
+                        - generic [ref=e350]: GitLab
+                    - button "Bitbucket" [ref=e352] [cursor=pointer]:
+                      - generic [ref=e353]:
+                        - img [ref=e354]
+                        - generic [ref=e358]: Bitbucket
+    - generic:
+      - generic:
+        - generic: "0 services selected:"
+        - generic:
+          - generic:
+            - button:
+              - generic:
+                - img
+              - generic: Move
+              - img
+      - generic:
+        - separator
+        - generic:
+          - generic:
+            - button:
+              - img
+  - iframe [ref=e280]:
+    

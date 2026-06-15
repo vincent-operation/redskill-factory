@@ -89,12 +89,26 @@ export function SellerPage() {
             <input value={alipayAccount} onChange={(e) => setAlipayAccount(e.target.value)} placeholder="手机号或邮箱" />
           </div>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>微信收款码 (base64 图片，可选)</label>
-            <textarea value={wechatQR} onChange={(e) => setWechatQR(e.target.value)} placeholder="data:image/png;base64,..." rows={2} style={{ fontSize: 11 }} />
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>微信收款码 (上传图片)</label>
+            <input type="file" accept="image/*" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = () => setWechatQR(reader.result as string);
+              reader.readAsDataURL(file);
+            }} style={{ marginBottom: 4 }} />
+            <textarea value={wechatQR} onChange={(e) => setWechatQR(e.target.value)} placeholder="或粘贴 base64: data:image/png;base64,..." rows={2} style={{ fontSize: 11 }} />
           </div>
           <div style={{ marginBottom: 12 }}>
-            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>支付宝收款码 (base64 图片，可选)</label>
-            <textarea value={alipayQR} onChange={(e) => setAlipayQR(e.target.value)} placeholder="data:image/png;base64,..." rows={2} style={{ fontSize: 11 }} />
+            <label style={{ fontSize: 13, fontWeight: 600, display: "block", marginBottom: 4 }}>支付宝收款码 (上传图片)</label>
+            <input type="file" accept="image/*" onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = () => setAlipayQR(reader.result as string);
+              reader.readAsDataURL(file);
+            }} style={{ marginBottom: 4 }} />
+            <textarea value={alipayQR} onChange={(e) => setAlipayQR(e.target.value)} placeholder="或粘贴 base64: data:image/png;base64,..." rows={2} style={{ fontSize: 11 }} />
           </div>
 
           <button className="btn-primary" onClick={handleRegister} disabled={loading} style={{ width: "100%" }}>

@@ -42,6 +42,40 @@ function saveSeller(profile: SellerProfile): void {
 }
 
 /**
+ * POST /api/v1/seller/upload-qr — 上传收款码 (base64)
+ */
+sellerRouter.post("/upload-qr", (req, res) => {
+  const { id, method, qrData } = req.body as {
+    id?: string;
+    method?: "wechat" | "alipay";
+    qrData?: string;
+  };
+  if (!id) throw new ValidationError("id is required");
+  if (!method || !["wechat", "alipay"].includes(method)) throw new ValidationError("method must be 'wechat' or 'alipay'");
+  if (!qrData) throw new ValidationError("qrData is required (base64 image)");
+
+  const profile = loadSeller(id);
+  if (!profile) throw new NotFoundError(`Seller '${id}'`);
+
+  // Validate base64 format
+  if (!qrData.startsWith("data:image/")) {
+    throw new ValidationError("qrData must be a data URI (data:image/png;base64,...)");
+  }
+
+  if (method === "wechat") profile.wechatQR = qrData;
+  else profile.alipayQR = qrData;
+
+  saveSeller(profile);
+
+  res.json({
+    success: true,
+    message: `${method === "wechat" ? "微信" : "支付宝"}收款码已上传`,
+    method,
+    size: qrData.length,
+  });
+});
+
+/**
  * GET /api/v1/seller/payment-status — 支付配置状态
  */
 sellerRouter.get("/payment-status", (_req, res) => {

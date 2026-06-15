@@ -72,8 +72,25 @@ async function run() {
 
   // Revenue pulse
   const pulse = await revenuePulse();
+  const prevRevenue = state.lastRevenue || 0;
   if (pulse) {
     console.log(`  💰 累计收入: ¥${pulse.totalRevenue || 0} | 订单: ${pulse.totalOrders || 0}`);
+    if (pulse.totalRevenue > prevRevenue) {
+      const delta = pulse.totalRevenue - prevRevenue;
+      console.log(`  🎉 新收入 +¥${delta}！`);
+      state.lastRevenue = pulse.totalRevenue;
+      saveState(state);
+    }
+  }
+
+  // Tunnel auto-restart
+  if (!health.server) {
+    console.log("  ⚠️ 服务器离线，尝试重启隧道...");
+    try {
+      const { spawn } = await import("node:child_process");
+      spawn("npx", ["localtunnel", "--port", "3001"], { detached: true, stdio: "ignore" }).unref();
+      console.log("  🔄 隧道重启命令已发出");
+    } catch { console.log("  ❌ 隧道重启失败"); }
   }
 
   // Daily report generation (at 23:00)

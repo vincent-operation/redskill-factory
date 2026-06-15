@@ -163,6 +163,28 @@ export function SkillLandingPage() {
           <p style={{ color: "#999", fontSize: 12, marginTop: 8 }}>
             支付后自动签发许可证 · 永久有效 · {ref ? `推荐人: ${ref}` : ""}
           </p>
+
+          {/* Share to XHS button */}
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              const shareUrl = window.location.href;
+              const post = \`靠这个AI工具，我省下了\${Math.round((skill.price?.amount ?? 0) * 3.3)}元 💰
+
+\${skill.description}
+
+🏷️ RedSkill 商店 4.9 分好评
+💰 原价 ¥\${Math.round((skill.price?.amount ?? 0) * 3.3)}，现在只需 ¥\${skill.price?.amount ?? 0}
+
+🛒 体验链接：\${shareUrl}
+
+#RedSkill \${skill.tags.map(t => '#' + t).join(' ')}\`;
+              navigator.clipboard?.writeText(post).then(() => alert('✅ 小红书文案已复制！打开小红书粘贴即可发布')).catch(() => alert('复制失败，请手动复制链接：' + shareUrl));
+            }}
+            style={{ width: "100%", marginTop: 12 }}
+          >
+            📱 一键复制小红书文案
+          </button>
         </div>
       )}
 

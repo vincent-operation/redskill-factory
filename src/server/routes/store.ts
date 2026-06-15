@@ -76,7 +76,28 @@ storeRouter.get("/", (_req, res) => {
     if (userList.length > 0) storeSkills["custom"] = userList;
   }
 
-  res.json({ store: storeSkills });
+  // 精选推荐 and 新品
+  const allSkills: Record<string, unknown>[] = [];
+  for (const skills of Object.values(storeSkills)) {
+    for (const s of (skills as unknown[])) {
+      if (s) allSkills.push(s as Record<string, unknown>);
+    }
+  }
+
+  const featured = allSkills
+    .filter((s) => s.price != null && Number(s.salesCount) > 500)
+    .sort((a, b) => Number(b.rating ?? 0) - Number(a.rating ?? 0))
+    .slice(0, 3)
+    .map((s) => ({
+      ...s,
+      badge: Number(s.salesCount) > 2000 ? "🔥 热销" : "⭐ 精选",
+    }));
+
+  const newArrivals = allSkills
+    .filter((s) => s.rating == null || Number(s.salesCount) < 200)
+    .slice(0, 3);
+
+  res.json({ store: storeSkills, featured, newArrivals, totalProducts: allSkills.length });
 });
 
 /**

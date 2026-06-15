@@ -46,6 +46,15 @@ paymentRouter.post("/create", async (req, res) => {
     sellerAccount: sellerAccount ?? "seller",
   });
 
+  // 5分钟后自动过期
+  const expireMs = 5 * 60 * 1000;
+  setTimeout(() => {
+    const o = paymentManager.getOrder(order.orderId);
+    if (o && o.status === "pending") {
+      o.status = "expired";
+    }
+  }, expireMs).unref();
+
   res.json({
     success: true,
     order: {
@@ -56,6 +65,7 @@ paymentRouter.post("/create", async (req, res) => {
       status: order.status,
       qrCode: order.qrCode,
       paymentUrl: order.paymentUrl,
+      expiresIn: expireMs,
     },
     instruction: order.mode === "qr"
       ? `请使用${order.method === "wechat" ? "微信" : "支付宝"}转账 ¥${order.amount}，然后输入交易单号验证`

@@ -25,6 +25,12 @@ mountRoutes(app);
 
 const port = parseInt(process.env.RFS_SERVER_PORT ?? process.env.PORT ?? "3001", 10);
 
+// Serve static files from web/public (upload page, etc.)
+const publicDir = resolve(process.cwd(), "web", "public");
+if (existsSync(publicDir)) {
+  app.use(express.static(publicDir));
+}
+
 // Production: serve Vite-built web UI
 const webDist = resolve(process.cwd(), "web", "dist");
 const hasWeb = existsSync(webDist);

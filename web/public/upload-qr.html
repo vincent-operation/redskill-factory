@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>上传收款码</title>
+<style>
+body{font-family:sans-serif;max-width:420px;margin:60px auto;padding:20px}
+.box{border:2px dashed #ccc;border-radius:12px;padding:30px;text-align:center;margin:12px 0;cursor:pointer}
+.box:hover{border-color:#ff6b35}
+.box.done{border-color:#22c55e;background:#f0fdf4}
+.box .icon{font-size:40px}
+input[type=file]{display:none}
+.msg{font-size:13px;margin-top:8px}
+</style></head>
+<body>
+<h2>📤 上传收款码</h2>
+<p>卖家: <b>@redskill</b> (晴Jers / 18678969257)</p>
+
+<div class="box" id="wx-box" onclick="document.getElementById('wx-file').click()">
+  <div class="icon">💚</div>
+  <div><b>点击上传微信收款码</b></div>
+  <div class="msg" id="wx-msg">点击选择图片</div>
+</div>
+<input type="file" id="wx-file" accept="image/*" onchange="upload('wechat', this)">
+
+<div class="box" id="ali-box" onclick="document.getElementById('ali-file').click()">
+  <div class="icon">💙</div>
+  <div><b>点击上传支付宝收款码</b></div>
+  <div class="msg" id="ali-msg">点击选择图片</div>
+</div>
+<input type="file" id="ali-file" accept="image/*" onchange="upload('alipay', this)">
+
+<script>
+async function upload(method, input) {
+  const file = input.files[0];
+  if (!file) return;
+  const msgEl = document.getElementById(method === 'wechat' ? 'wx-msg' : 'ali-msg');
+  const boxEl = document.getElementById(method === 'wechat' ? 'wx-box' : 'ali-box');
+  msgEl.textContent = '转换中...';
+
+  const reader = new FileReader();
+  reader.onload = async () => {
+    msgEl.textContent = '上传中...';
+    try {
+      const res = await fetch('/api/v1/seller/upload-qr', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: '@redskill', method, qrData: reader.result})
+      });
+      const data = await res.json();
+      if (data.success) {
+        msgEl.innerHTML = '<span style="color:#22c55e">✅ 上传成功！' + (method==='wechat'?'微信':'支付宝') + '收款码已生效</span>';
+        boxEl.classList.add('done');
+      } else {
+        msgEl.innerHTML = '<span style="color:red">❌ ' + (data.message||'失败') + '</span>';
+      }
+    } catch(e) {
+      msgEl.innerHTML = '<span style="color:red">❌ 无法连接服务器。先运行 npm run server:dev</span>';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+</script>
+</body></html>

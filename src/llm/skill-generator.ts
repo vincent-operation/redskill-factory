@@ -108,8 +108,11 @@ export async function generateSkillFromDescription(
         maxTokens: 4096,
       });
 
-      // 清理 LLM 输出 (去除可能的 markdown 代码块标记)
-      const yaml = cleanYamlOutput(result.content);
+      // 清理 LLM 输出
+      let yaml = cleanYamlOutput(result.content);
+
+      // Post-process common LLM mistakes
+      yaml = fixCommonMistakes(yaml);
 
       // 校验生成的 YAML
       const parsed = parseYaml(yaml);
@@ -152,6 +155,34 @@ function getAvailableProvider(): LlmProvider | null {
   const providers = llmRouter.listAvailable();
   if (providers.length === 0) return null;
   return llmRouter.get(providers[0]!) ?? null;
+}
+
+/** Fix common LLM format mistakes in generated YAML */
+function fixCommonMistakes(yaml: string): string {
+  let fixed = yaml;
+
+  // Fix: price as number → price as object
+  // Matches: "price: 39.9" → "price:\n    amount: 39.9\n    currency: CNY"
+  fixed = fixed.replace(
+    /^(\s*)price:\s*(\d+(?:\.\d+)?)\s*$/m,
+    (_match, indent: string, amount: string) =>
+      `${indent}price:\n${indent}  amount: ${amount}\n${indent}  currency: CNY`,
+  );
+
+  // Fix: Chinese category → English enum
+  const categoryMap: Record<string, string> = {
+    "教育": "education", "效率": "productivity", "创意": "creative",
+    "生活": "lifestyle", "商业": "business", "健康": "health",
+    "科技": "tech", "其他": "other",
+  };
+  for (const [cn, en] of Object.entries(categoryMap)) {
+    fixed = fixed.replace(
+      new RegExp(`^(\\s*category:\\s*)${cn}\\s*$`, "m"),
+      `$1${en}`,
+    );
+  }
+
+  return fixed;
 }
 
 function cleanYamlOutput(content: string): string {

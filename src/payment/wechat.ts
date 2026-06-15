@@ -5,8 +5,7 @@
  * - QR 模式 (默认): 个人收款码，买家转账后输入交易单号验证
  * - API 模式: JSAPI/Native 支付 (需商户号)
  */
-import type { PaymentProvider, PaymentOrder, CreateOrderParams } from "./types.js";
-import type { PaymentMethod } from "./types.js";
+import type { PaymentProvider, PaymentOrder, CreateOrderParams, PaymentMethod } from "./types.js";
 import { randomUUID } from "node:crypto";
 
 export class WeChatPayProvider implements PaymentProvider {
@@ -73,16 +72,7 @@ export class WeChatPayProvider implements PaymentProvider {
     amount: number,
     remark: string,
   ): Promise<{ qrCode: string; paymentUrl: string }> {
-    // 生成微信个人收款码的描述信息
-    // 实际使用时，卖家上传自己的收款码图片
-    const paymentInfo = {
-      method: "wechat",
-      amount,
-      remark,
-      instruction: `请使用微信扫一扫转账 ¥${amount}，备注: ${remark.slice(0, 20)}`,
-    };
-
-    // 返回一个 data URI 占位 QR (生产环境替换为卖家真实收款码)
+    // 生成微信个人收款信息 (生产环境: 卖家上传收款码图片)
     const qrCode = `wechat://pay?amount=${amount}&remark=${encodeURIComponent(remark)}`;
     const paymentUrl = qrCode;
 
@@ -92,33 +82,12 @@ export class WeChatPayProvider implements PaymentProvider {
   // ─── API 模式方法 (需商户号) ───
 
   private async createNativeOrder(order: PaymentOrder): Promise<string> {
-    // 微信支付 V3 Native 下单 API
-    // POST https://api.mch.weixin.qq.com/v3/pay/transactions/native
-    const body = {
-      appid: this.appId,
-      mchid: this.mchId,
-      description: `RedSkill: ${order.skillName}`,
-      out_trade_no: order.orderId,
-      notify_url: `${process.env.RFS_SERVER_URL ?? "http://localhost:3001"}/api/v1/payment/wechat/notify`,
-      amount: {
-        total: Math.round(order.amount * 100), // 分
-        currency: "CNY",
-      },
-    };
-
-    // 实际调用微信支付 API (需 API 签名)
-    // const response = await fetch("https://api.mch.weixin.qq.com/v3/pay/transactions/native", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json", "Authorization": this.sign(body) },
-    //   body: JSON.stringify(body),
-    // });
-    // return (await response.json()).code_url;
-
-    // 模拟返回
+    // 微信支付 V3 Native 下单 — 需商户号
+    // const response = await fetch("https://api.mch.weixin.qq.com/v3/pay/transactions/native", ...);
     return `wechat://wxpay/bizpayurl?pr=${order.orderId}`;
   }
 
-  private async queryOrderStatus(orderId: string): Promise<{ success: boolean; txnId?: string }> {
+  private async queryOrderStatus(_orderId: string): Promise<{ success: boolean; txnId?: string }> {
     // GET https://api.mch.weixin.qq.com/v3/pay/transactions/out-trade-no/{orderId}
     // 实际调用微信支付查询 API
     return { success: true, txnId: `WXTXN${Date.now()}` };

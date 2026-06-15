@@ -5,8 +5,7 @@
  * - QR 模式 (默认): 个人收款码，买家转账后输入交易单号验证
  * - API 模式: 当面付/电脑网站支付 (需商户 PID + 密钥)
  */
-import type { PaymentProvider, PaymentOrder, CreateOrderParams } from "./types.js";
-import type { PaymentMethod } from "./types.js";
+import type { PaymentProvider, PaymentOrder, CreateOrderParams, PaymentMethod } from "./types.js";
 import { randomUUID } from "node:crypto";
 
 export class AlipayProvider implements PaymentProvider {
@@ -77,31 +76,12 @@ export class AlipayProvider implements PaymentProvider {
   // ─── API 模式方法 (需商户 PID) ───
 
   private async createQROrder(order: PaymentOrder): Promise<string> {
-    // 支付宝当面付 API
-    // POST https://openapi.alipay.com/gateway.do
-    const params = {
-      app_id: this.appId,
-      method: "alipay.trade.precreate",
-      charset: "utf-8",
-      sign_type: "RSA2",
-      timestamp: new Date().toISOString().replace(/\.\d{3}Z$/, "+08:00"),
-      version: "1.0",
-      biz_content: JSON.stringify({
-        out_trade_no: order.orderId,
-        total_amount: order.amount.toFixed(2),
-        subject: `RedSkill: ${order.skillName}`,
-      }),
-    };
-
-    // 实际调用需 RSA 签名
-    // const signed = this.rsaSign(params);
-    // const response = await fetch("https://openapi.alipay.com/gateway.do?" + new URLSearchParams(signed));
-    // return (await response.json()).alipay_trade_precreate_response.qr_code;
-
+    // 支付宝当面付 API — 需商户号
+    // const response = await fetch("https://openapi.alipay.com/gateway.do?" + ...);
     return `https://qr.alipay.com/bax${order.orderId}`;
   }
 
-  private async queryOrderStatus(orderId: string): Promise<{ success: boolean; txnId?: string }> {
+  private async queryOrderStatus(_orderId: string): Promise<{ success: boolean; txnId?: string }> {
     // alipay.trade.query — 查询订单支付状态
     // 实际调用支付宝查询 API
     return { success: true, txnId: `ALITXN${Date.now()}` };

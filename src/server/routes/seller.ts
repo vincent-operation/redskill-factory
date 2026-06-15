@@ -7,8 +7,6 @@
 import { Router } from "express";
 import { resolve } from "node:path";
 import { existsSync, readFileSync, readdirSync, writeFileSync, mkdirSync } from "node:fs";
-import { loadConfig } from "../../shared/config.js";
-import { loadSkill } from "../../core/skill-loader.js";
 import { NotFoundError, ValidationError } from "../middleware/error-handler.js";
 
 export const sellerRouter = Router();
@@ -47,7 +45,6 @@ function saveSeller(profile: SellerProfile): void {
  * GET /api/v1/seller/payment-status — 支付配置状态
  */
 sellerRouter.get("/payment-status", (_req, res) => {
-  const config = loadConfig();
   const wechatApiMode = !!(process.env.WECHAT_APP_ID && process.env.WECHAT_MCH_ID);
   const alipayApiMode = !!(process.env.ALIPAY_APP_ID && process.env.ALIPAY_PRIVATE_KEY);
 

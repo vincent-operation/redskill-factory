@@ -7,7 +7,7 @@
 import { Router } from "express";
 import { resolve } from "node:path";
 import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { loadSkill, loadSkillsFromDir } from "../../core/skill-loader.js";
+import { loadSkill } from "../../core/skill-loader.js";
 import { findSkillFiles } from "../../shared/fs.js";
 
 export const analyticsRouter = Router();

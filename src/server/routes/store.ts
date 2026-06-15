@@ -57,7 +57,7 @@ storeRouter.get("/", (_req, res) => {
   if (existsSync(SKILLS_DIR)) {
     const userSkills = loadSkillsFromDir(SKILLS_DIR);
     const userList: unknown[] = [];
-    for (const [name, result] of userSkills) {
+    for (const [, result] of userSkills) {
       if (result.success && result.skill) {
         userList.push({
           name: result.skill.meta.name,

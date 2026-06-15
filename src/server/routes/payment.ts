@@ -8,7 +8,7 @@ import { paymentManager } from "../../payment/manager.js";
 import { generateLicense, generateLicenseFile } from "../../core/license.js";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
-import { NotFoundError, ValidationError } from "../middleware/error-handler.js";
+import { ValidationError } from "../middleware/error-handler.js";
 
 export const paymentRouter = Router();
 

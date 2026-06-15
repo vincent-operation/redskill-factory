@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html><head><meta charset="utf-8"><title>QR Upload</title>
+<style>body{font-family:system-ui;max-width:500px;margin:40px auto;padding:20px}
+input,button{padding:10px;margin:8px 0;width:100%;box-sizing:border-box}
+button{background:#ff6b35;color:#fff;border:0;cursor:pointer;font-size:16px}
+.success{color:green}.error{color:red}</style></head>
+<body>
+<h2>收款码上传</h2>
+<p>卖家ID: <b>@redskill</b></p>
+<label>微信收款码: <input type="file" id="wechat" accept="image/*"></label>
+<div id="wx-msg"></div>
+<label>支付宝收款码: <input type="file" id="alipay" accept="image/*"></label>
+<div id="ali-msg"></div>
+<script>
+async function upload(method, fileInput, msgDiv) {
+  const file = fileInput.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = async () => {
+    try {
+      const res = await fetch('/api/v1/seller/upload-qr', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: '@redskill', method, qrData: reader.result})
+      });
+      const data = await res.json();
+      msgDiv.innerHTML = data.success
+        ? `<span class="success">✅ 已上传 (${method==='wechat'?'微信':'支付宝'})</span>`
+        : `<span class="error">❌ ${data.message || '失败'}</span>`;
+    } catch(e) {
+      msgDiv.innerHTML = '<span class="error">❌ 服务器未启动。先运行 npm run server:dev</span>';
+    }
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('wechat').addEventListener('change', function(){upload('wechat',this,document.getElementById('wx-msg'))});
+document.getElementById('alipay').addEventListener('change', function(){upload('alipay',this,document.getElementById('ali-msg'))});
+</script>
+<p style="color:#999;font-size:12px;margin-top:20px">上传的收款码会自动显示在技能落地页</p>
+</body></html>

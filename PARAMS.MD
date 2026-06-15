@@ -172,6 +172,8 @@ skill.yml → SkillLoader (parse + validate)
 | 2026-06-14 | 新模板: xhs-growth(¥39.9) + resume-pro(¥49.9) + meal-planner(¥29.9) | 构建+61测试+0 lint |
 | 2026-06-14 | AI生成修复: init --from bug + post-processing 格式修正 | 构建+61测试 |
 | 2026-06-14 | ESLint 清零: 12 warnings → 0 | 0 warnings |
+| 2026-06-14 | 新模板: sleep-coach(¥29.9) + ecommerce-bot(¥39.9) → 9产品全品类覆盖 | 构建+61测试+0 lint |
+| 2026-06-14 | 生产烟雾测试: 13/14 endpoints 200, 5个技能落地页全部通过 | 服务器验证 |
 
 ## 9. 使用说明
 

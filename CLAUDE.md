@@ -36,6 +36,15 @@ npm start            # 运行 CLI
 node dist/cli/index.js init english-tutor  # 测试 init 命令
 ```
 
+## PARAMS.md 机制
+
+**PARAMS.MD 是本项目的唯一工作机制和规范来源。**
+
+每次代码修改并验证通过后，必须立即更新 PARAMS.MD：
+- 记录参数变更、新增配置项、API 变更
+- 更新版本号和时间戳
+- 确保下次会话可直接从 PARAMS.MD 理解项目全貌
+
 ## 技术约定
 
 - ESM imports 必须带 `.js` 后缀 (`import { foo } from './bar.js'`)

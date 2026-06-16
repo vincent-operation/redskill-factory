@@ -11,6 +11,7 @@ import { createListCommand } from "./commands/list.js";
 import { createTestCommand } from "./commands/test.js";
 import { createBuildCommand } from "./commands/build.js";
 import { createMarketCommand } from "./commands/market.js";
+import { createTrendingCommand } from "./commands/trending.js";
 
 const program = new Command();
 
@@ -24,6 +25,7 @@ program
   .addCommand(createBuildCommand())
   .addCommand(createMarketCommand())
   .addCommand(createListCommand())
+  .addCommand(createTrendingCommand())
   ;
 
 program.parse();

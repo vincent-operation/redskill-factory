@@ -10,6 +10,9 @@ import { Command } from "commander";
 import { scanTrends } from "../../trending/discovery.js";
 import { produceFromSignals } from "../../trending/production.js";
 import { decidePricing, optimizeContent } from "../../trending/pricing.js";
+import { analyzeCrossPlatform } from "../../trending/cross-optimizer.js";
+import { generateWenkuDocs } from "../../trending/wenku-gen.js";
+import type { WenkuCategory } from "../../trending/wenku-gen.js";
 import { logger } from "../../shared/logger.js";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { resolve } from "node:path";
@@ -81,8 +84,25 @@ export function createTrendingCommand(): Command {
       const reportPath = resolve(reportDir, `trending-${new Date().toISOString().slice(0, 10)}.json`);
       writeFileSync(reportPath, JSON.stringify(report, null, 2));
 
+      // Cross-platform analysis
+      logger.title("🔗 跨平台协同分析...");
+      const crossReport = analyzeCrossPlatform(signals.slice(0, count));
+      console.log(`\n   📚 文库文档: ${crossReport.byPlatform.wenku > 0 ? '✅' : '—'} ¥${crossReport.byPlatform.wenku} 预估`);
+      console.log(`   🧠 AI技能:   ${crossReport.byPlatform.skill > 0 ? '✅' : '—'} ¥${crossReport.byPlatform.skill} 预估`);
+      console.log(`   📱 XHS帖子:  ${crossReport.byPlatform.xhsPosts} 篇`);
+      console.log(`\n   💡 协同动作:`);
+      for (const action of crossReport.synergyActions) console.log(`   ${action}`);
+
+      // Generate Wenku documents
+      logger.title("📚 生成百度文库文档...");
+      const wenkuTopics = crossReport.decisions
+        .filter(d => d.wenku)
+        .map(d => ({ keyword: d.trendKeyword, category: d.wenku!.category as WenkuCategory, subject: d.wenku!.subject }));
+      console.log(`   准备生成 ${wenkuTopics.length} 篇文库文档`);
+
       console.log(`\n📁 报告已保存: ${reportPath}`);
       console.log(`📁 产品文件: .products/`);
-      console.log(`\n🚀 下一步: 将产品上架到小红书店铺`);
+      console.log(`📁 文库文档: .wenku/`);
+      console.log(`\n🚀 下一步: 将产品上架到小红书店铺 + 百度文库`);
     });
 }

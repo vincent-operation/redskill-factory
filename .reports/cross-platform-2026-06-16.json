@@ -1,0 +1,171 @@
+{
+  "timestamp": "2026-06-16T10:33:08.128Z",
+  "trends": [
+    {
+      "keyword": "暑假",
+      "platform": "xhs",
+      "heatScore": 100,
+      "growthRate": 0.16742993932600034,
+      "monetizeScore": 69.5,
+      "timeframe": "now",
+      "category": "亲子教育",
+      "suggestedProduct": "暑假学习计划模板",
+      "suggestedPrice": 9.9,
+      "competitors": 35,
+      "source": "https://www.xiaohongshu.com/search_result/暑假"
+    },
+    {
+      "keyword": "育儿",
+      "platform": "xhs",
+      "heatScore": 76,
+      "growthRate": 0.4534831097972708,
+      "monetizeScore": 68.4,
+      "timeframe": "now",
+      "category": "亲子教育",
+      "suggestedProduct": "0-3岁育儿百科卡片",
+      "suggestedPrice": 19.9,
+      "competitors": 35,
+      "source": "https://www.xiaohongshu.com/search_result/育儿"
+    },
+    {
+      "keyword": "618",
+      "platform": "xhs",
+      "heatScore": 100,
+      "growthRate": 0.0378488864007763,
+      "monetizeScore": 65,
+      "timeframe": "now",
+      "category": "其他",
+      "suggestedProduct": "618省钱攻略+比价表",
+      "suggestedPrice": 6.9,
+      "competitors": 51,
+      "source": "https://www.xiaohongshu.com/search_result/618"
+    },
+    {
+      "keyword": "考公",
+      "platform": "xhs",
+      "heatScore": 76,
+      "growthRate": 0.328281087132721,
+      "monetizeScore": 60.900000000000006,
+      "timeframe": "now",
+      "category": "职场教育",
+      "suggestedProduct": "行测速记手册+申论模板",
+      "suggestedPrice": 19.9,
+      "competitors": 62,
+      "source": "https://www.xiaohongshu.com/search_result/考公"
+    },
+    {
+      "keyword": "AI",
+      "platform": "xhs",
+      "heatScore": 49,
+      "growthRate": 0.029858401977391896,
+      "monetizeScore": 60.6,
+      "timeframe": "1week",
+      "category": "效率工具",
+      "suggestedProduct": "AI工具使用指南",
+      "suggestedPrice": 19.9,
+      "competitors": 30,
+      "source": "https://www.xiaohongshu.com/search_result/AI"
+    }
+  ],
+  "decisions": [
+    {
+      "trendKeyword": "暑假",
+      "strategy": "skill",
+      "reasoning": "通用话题→Skill+XHS",
+      "skill": {
+        "template": "暑假",
+        "estimatedRevenue": 200
+      },
+      "xhsPost": {
+        "angle": "暑假神器推荐",
+        "hashtags": [
+          "#暑假",
+          "#RedSkill"
+        ]
+      }
+    },
+    {
+      "trendKeyword": "育儿",
+      "strategy": "skill",
+      "reasoning": "通用话题→Skill+XHS",
+      "skill": {
+        "template": "育儿",
+        "estimatedRevenue": 152
+      },
+      "xhsPost": {
+        "angle": "育儿神器推荐",
+        "hashtags": [
+          "#育儿",
+          "#RedSkill"
+        ]
+      }
+    },
+    {
+      "trendKeyword": "618",
+      "strategy": "skill",
+      "reasoning": "通用话题→Skill+XHS",
+      "skill": {
+        "template": "618",
+        "estimatedRevenue": 200
+      },
+      "xhsPost": {
+        "angle": "618神器推荐",
+        "hashtags": [
+          "#618",
+          "#RedSkill"
+        ]
+      }
+    },
+    {
+      "trendKeyword": "考公",
+      "strategy": "all",
+      "reasoning": "教育类→文库主力+Skill辅助+XHS引流",
+      "wenku": {
+        "category": "exam-postgrad",
+        "subject": "考公",
+        "estimatedRevenue": 448
+      },
+      "skill": {
+        "template": "study-planner",
+        "estimatedRevenue": 228
+      },
+      "xhsPost": {
+        "angle": "考公必过资料，文库搜\"考公精编版\"",
+        "hashtags": [
+          "#考公",
+          "#考试",
+          "#学习资料"
+        ]
+      }
+    },
+    {
+      "trendKeyword": "AI",
+      "strategy": "skill",
+      "reasoning": "通用话题→Skill+XHS",
+      "skill": {
+        "template": "AI",
+        "estimatedRevenue": 98
+      },
+      "xhsPost": {
+        "angle": "AI神器推荐",
+        "hashtags": [
+          "#AI",
+          "#RedSkill"
+        ]
+      }
+    }
+  ],
+  "totalEstimatedRevenue": 1326,
+  "byPlatform": {
+    "wenku": 448,
+    "skill": 878,
+    "xhsPosts": 5
+  },
+  "synergyActions": [
+    "📚 文库文档描述中嵌入XHS帖子链接 → 1个文档互相导流",
+    "🛍️ XHS店铺商品描述推荐文库资料 → 交叉销售",
+    "🎯 优先投放: 暑假、育儿、618",
+    "📊 每周运行 rfs trending 更新趋势和产品",
+    "🔗 文库文档底部统一放: \"更多资料→小红书搜RedSkill\""
+  ]
+}
